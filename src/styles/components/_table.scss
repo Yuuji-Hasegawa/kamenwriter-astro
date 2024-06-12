@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-tbl {
+  width: 100%;
+
+  &__th,
+  &__td {
+    --box-border-w: 0;
+
+    border-color: map.get(setting.$pickupColor, text-secondary);
+  }
+
+  &__th {
+    flex-basis: 260px;
+    flex-grow: 1;
+    color: map.get(setting.$pickupColor, text-secondary);
+    background-color: map.get(setting.$pickupColor, bg-secondary);
+    border-width: 1px clamp(0px, map.get(setting.$breakpoints, underm), 1px) 0 1px;
+
+    .c-tbl tr:last-of-type & {
+      border-bottom-width: clamp(0px, map.get(setting.$breakpoints, overm), 1px);
+    }
+  }
+
+  &__td {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-width: clamp(calc(100% - 260px), map.get(setting.$breakpoints, underm), 100%);
+    border-width: 1px 1px 0;
+
+    .c-tbl tr:last-of-type & {
+      border-bottom-width: 1px;
+    }
+  }
+}

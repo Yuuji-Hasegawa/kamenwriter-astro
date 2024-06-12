@@ -1,0 +1,40 @@
+// スクリーンの設定
+@mixin max-screen($breakpoint) {
+  // 引数に設定された画面幅以下のスタイルを指定するメディアクエリ
+  @media screen and (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin min-screen($breakpoint) {
+  // 引数に設定された画面幅以下のスタイルを指定するメディアクエリ
+  @media screen and (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+// 印刷の設定
+@mixin print() {
+  @media print {
+    @content;
+  }
+}
+
+// ダークモードの設定
+@mixin darkmode() {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+@mixin retina() {
+  @media screen and (min-device-pixel-ratio: 2), screen and (resolution >= 192dpi), screen and (resolution >= 2dppx) {
+    @content;
+  }
+}
+
+@mixin portrait() {
+  @media screen and (orientation: portrait) {
+    @content;
+  }
+}

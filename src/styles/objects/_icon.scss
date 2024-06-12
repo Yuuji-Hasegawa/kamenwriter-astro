@@ -1,0 +1,7 @@
+@use '../settings' as setting;
+@use 'sass:map';
+
+.o-icon {
+  font-size: setting.f-font-size(2xs, em);
+  line-height: map.get(setting.$lineHeight, none);
+}

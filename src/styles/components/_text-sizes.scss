@@ -1,0 +1,142 @@
+@use 'sass:map';
+@use '../settings' as setting;
+@use '../tools/' as tool;
+
+.c-heading,
+.c-sec-heading,
+.c-ter-heading,
+.c-qua-heading,
+.c-qui-heading,
+.c-sen-heading,
+.c-display-2xl,
+.c-display-xl,
+.c-display-l,
+.c-display-m,
+.c-display-s,
+.c-display-xs,
+.c-display-2xs,
+.c-content-l,
+.c-content-m,
+.c-label-l,
+.c-label-m,
+.c-entry p {
+  letter-spacing: map.get(setting.$letterSpacing, m);
+}
+
+.c-display-2xl,
+.c-display-xl,
+.c-heading,
+.c-display-l {
+  @include tool.min-screen(setting.$breaks) {
+    line-height: map.get(setting.$lineHeight, s);
+  }
+}
+
+.c-display-2xl {
+  font-size: clamp(setting.f-font-size(5xl), (map.get(setting.$breakpoints, overs)), setting.f-font-size(6xl));
+}
+
+.c-display-xl {
+  font-size: clamp(setting.f-font-size(4xl), (map.get(setting.$breakpoints, overs)), setting.f-font-size(5xl));
+}
+
+.c-heading,
+.c-display-l {
+  font-size: clamp(var(--fnt-3xl), (map.get(setting.$breakpoints, overs)), setting.f-font-size(4xl));
+}
+
+.c-sec-heading,
+.c-entry h2,
+.c-display-m {
+  font-size: clamp(var(--fnt-2xl), (map.get(setting.$breakpoints, overs)), var(--fnt-3xl));
+}
+
+.c-ter-heading,
+.c-entry h3,
+.c-display-s {
+  font-size: clamp(var(--fnt-xl), (map.get(setting.$breakpoints, overs)), var(--fnt-2xl));
+}
+
+.c-qua-heading,
+.c-display-xs {
+  font-size: clamp(var(--fnt-l), (map.get(setting.$breakpoints, overs)), var(--fnt-xl));
+}
+
+.c-qui-heading,
+.c-display-2xs {
+  font-size: clamp(var(--fnt-m), (map.get(setting.$breakpoints, overs)), var(--fnt-l));
+  @include tool.max-screen(setting.$breaks - 1px) {
+    line-height: map.get(setting.$lineHeight, l);
+  }
+}
+
+.c-content-l,
+.c-content-m,
+.c-suppl-l,
+.c-suppl-m,
+.c-entry p {
+  line-height: map.get(setting.$lineHeight, l);
+}
+
+.c-content-m,
+.c-label-l {
+  font-size: var(--fnt-s);
+}
+
+.c-label-m,
+.c-suppl-l {
+  font-size: var(--fnt-xs);
+}
+
+.c-suppl-l,
+.c-suppl-m {
+  letter-spacing: map.get(setting.$letterSpacing, s);
+}
+
+.c-suppl-m {
+  font-size: var(--fnt-2xs);
+}
+
+.c-heading,
+.c-sec-heading,
+.c-entry h2 {
+  margin-top: setting.f-get-space(2xl, rem);
+}
+
+.c-ter-heading,
+.c-entry h3,
+.c-qua-heading,
+.c-qui-heading {
+  margin-top: setting.f-get-space(xl, rem);
+}
+
+.c-sen-heading {
+  margin-top: setting.f-get-space(l, rem);
+}
+
+.c-heading + *,
+.c-sec-heading + *,
+.c-entry h2 + *,
+.c-ter-heading + *,
+.c-entry h3 + * {
+  margin-top: setting.f-get-space(l, rem);
+}
+
+.c-qua-heading + *,
+.c-qui-heading + *,
+.c-sen-heading + * {
+  margin-top: setting.f-get-space(m, rem);
+}
+
+.c-cat-label,
+.c-input-label__required {
+  max-width: max-content;
+  color: color-mix(
+    in oklab,
+    #{map.get(setting.$pickupColor, bg-primary)},
+    #{map.get(setting.$pickupColor, text-primary)} 15%
+  );
+  background-color: map.get(setting.$brandColors, middle);
+  border-color: transparent;
+  border-radius: map.get(setting.$borderRadius, s);
+}

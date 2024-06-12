@@ -1,0 +1,42 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import setting from '@/config/setting.json'
+---
+
+<Layout title="Company" pageType="page">
+  <div class="o-center u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">会社概要</h1>
+    <table class="c-tbl">
+      <caption class="sr-only">弊社の概要</caption>
+      <tbody>
+        <tr class="o-sidebar u-space-none u-insert-sidebar">
+          <th class="o-box c-tbl__th u-py-s u-px-m c-content-l" scope="row">屋号</th>
+          <td class="o-box c-tbl__td u-py-s u-px-m c-content-l">{setting.company.name}</td>
+        </tr>
+        <tr class="o-sidebar u-space-none u-insert-sidebar">
+          <th class="o-box c-tbl__th u-py-s u-px-m c-content-l" scope="row">代表者</th>
+          <td class="o-box c-tbl__td u-py-s u-px-m c-content-l">{setting.company.owner}</td>
+        </tr>
+        <tr class="o-sidebar u-space-none u-insert-sidebar">
+          <th class="o-box c-tbl__th u-py-s u-px-m c-content-l" scope="row">所在地</th>
+          <td class="o-box c-tbl__td u-py-s u-px-m c-content-l">
+            〒{setting.company.zip}<br />{setting.company.address}
+          </td>
+        </tr>
+        <tr class="o-sidebar u-space-none u-insert-sidebar">
+          <th class="o-box c-tbl__th u-py-s u-px-m c-content-l" scope="row">設立</th>
+          <td class="o-box c-tbl__td u-py-s u-px-m c-content-l">{setting.company.birth}</td>
+        </tr>
+        <tr class="o-sidebar u-space-none u-insert-sidebar">
+          <th class="o-box c-tbl__th u-py-s u-px-m c-content-l" scope="row">事業内容</th>
+          <td class="o-box c-tbl__td u-py-s u-px-m c-content-l">
+            <ul class="c-dsc-list">
+              {setting.company.service.map((item) => <li>{item}</li>)}
+              <li>その他、上記に関わる業務</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</Layout>

@@ -1,0 +1,149 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-logo {
+  font-size: calc(setting.f-get-space(l) * 2);
+
+  &.\:header {
+    content-visibility: visible;
+    contain: content;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: 0.7;
+  }
+
+  &__lmp {
+    fill: var(--accent-middle);
+  }
+}
+
+.c-news-link {
+  flex-basis: map.get(setting.$breakpoints, unders);
+  flex-grow: 1;
+}
+
+.c-more-btn,
+.c-cta__btn,
+.c-send-btn,
+.c-to-home-btn {
+  max-width: max-content;
+  border-color: transparent;
+  border-radius: map.get(setting.$borderRadius, s);
+}
+
+.c-more-btn,
+.c-to-home-btn,
+.c-tag-link,
+.c-cat-link {
+  &:hover,
+  &:focus,
+  &:active {
+    color: map.get(setting.$brandColors, middle);
+    background: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}
+
+.c-cta__btn,
+.c-send-btn {
+  color: map.get(setting.$pickupColor, text-primary);
+  background-color: setting.$myBrand;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: setting.$myBrand;
+    background-color: transparent;
+    border-color: currentcolor;
+  }
+}
+
+.c-send-btn:disabled {
+  color: map.get(setting.$pickupColor, text-tertiary);
+  pointer-events: none;
+  background-color: map.get(setting.$pickupColor, bg-tertiary);
+  border-color: currentcolor;
+  outline-color: map.get(setting.$pickupColor, text-tertiary);
+}
+
+.c-card-link {
+  position: relative;
+  min-height: 100%;
+
+  &::after {
+    position: absolute;
+    inset: 50%;
+    z-index: -1;
+    width: clamp(100% + setting.f-get-space(s), (map.get(setting.$breakpoints, overs)), 100% + setting.f-get-space(m));
+    height: calc(100% + setting.f-get-space(m));
+    content: '';
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
+    transform: translate(-50%, -50%);
+  }
+
+  &:visited {
+    color: color-mix(in oklab, currentColor, map.get(setting.$pickupColor, bg-primary));
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    &::after {
+      background-color: color-mix(
+        in oklab,
+        #{map.get(setting.$pickupColor, bg-primary)},
+        #{map.get(setting.$pickupColor, text-primary)} 15%
+      );
+    }
+
+    & > .o-frame > * {
+      filter: blur(calc(setting.f-get-space(s) * 0.15)) grayscale(100%);
+      transform: scale(1.15);
+    }
+  }
+}
+
+.c-card-link__detail,
+.c-pre-bio {
+  display: grid;
+  grid-template-columns: 50px auto;
+  gap: setting.f-get-space(m);
+}
+
+.c-entry a,
+.c-lnk-txt,
+.c-news-link,
+.c-breadcrumb-link {
+  &:visited {
+    color: color-mix(in oklab, currentColor, map.get(setting.$pickupColor, bg-primary));
+  }
+
+  &:hover {
+    color: map.get(setting.$brandColors, tint);
+  }
+
+  &:focus,
+  &:active {
+    color: map.get(setting.$brandColors, shade);
+  }
+}
+
+.c-entry a,
+.c-lnk-txt,
+.c-news-link {
+  color: map.get(setting.$brandColors, middle);
+  text-decoration: underline;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+}

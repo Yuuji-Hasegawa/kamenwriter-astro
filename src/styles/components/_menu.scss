@@ -1,0 +1,184 @@
+@use 'sass:map';
+@use '../settings' as setting;
+@use '../tools/' as tool;
+
+.c-pager-btn,
+.c-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(setting.f-get-space(l) * 2);
+  aspect-ratio: 1/1;
+  border-radius: map.get(setting.$borderRadius, s);
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
+    background-color: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}
+
+.c-pager-btn {
+  color: map.get(setting.$pickupColor, text-secondary);
+  background-color: map.get(setting.$pickupColor, bg-secondary);
+  border-color: transparent;
+
+  &[aria-current='page'] {
+    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
+    background-color: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}
+
+.c-gnav-wrap {
+  position: relative;
+}
+
+.c-menu-btn {
+  color: map.get(setting.$pickupColor, text-primary);
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.3s ease-in-out;
+  content-visibility: visible;
+  contain: content;
+
+  &::before {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+    display: none;
+    pointer-events: none;
+    cursor: pointer;
+    visibility: hidden;
+    content: '';
+    background: rgba(map.get(setting.$pickupColor, bg-primary), 0.5);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+
+    .c-gnav-wrap[open] & {
+      display: block;
+      pointer-events: auto;
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__inner {
+    position: relative;
+    width: setting.f-get-space(l);
+
+    .c-gnav-wrap[open] & {
+      background-color: transparent;
+    }
+  }
+
+  &__inner,
+  &__inner::before,
+  &__inner::after {
+    height: 1px;
+    background: currentcolor;
+  }
+
+  &__inner::before,
+  &__inner::after {
+    position: absolute;
+    width: 100%;
+    content: '';
+
+    .c-gnav-wrap[open] & {
+      top: 0;
+    }
+  }
+
+  &__inner::before {
+    top: -9px;
+
+    .c-gnav-wrap[open] & {
+      transform: rotate(-45deg);
+    }
+  }
+
+  &__inner::after {
+    top: 9px;
+
+    .c-gnav-wrap[open] & {
+      transform: rotate(45deg);
+    }
+  }
+}
+
+@include tool.max-screen(setting.$breakm - 1px) {
+  .c-gnav {
+    position: fixed;
+    top: calc((setting.f-get-space(l) + setting.f-get-space(s)) * 2);
+    right: 0;
+    z-index: 999;
+    width: 100%;
+    height: calc(100% - ((setting.f-get-space(l) + setting.f-get-space(s)) * 2));
+    padding: setting.f-get-space(m) var(--space-clamp) setting.f-get-space(xl);
+    color: map.get(setting.$pickupColor, text-primary);
+    background-color: map.get(setting.$pickupColor, bg-primary);
+    box-shadow: 0 0 3px rgba(map.get(setting.$pickupColor, text-tertiary), 0.5);
+
+    &__item:not(:last-of-type) {
+      margin-bottom: setting.f-get-space(l);
+    }
+
+    &__link {
+      padding: setting.f-get-space(m) 0;
+      text-align: center;
+    }
+  }
+}
+
+@include tool.min-screen(setting.$breakm) {
+  .c-gnav__list {
+    display: flex;
+    gap: setting.f-get-space(m);
+  }
+
+  .c-gnav__link {
+    padding: setting.f-get-space(s) setting.f-get-space(m);
+  }
+}
+
+.c-gnav__link {
+  display: block;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: map.get(setting.$brandColors, middle);
+    background: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}
+
+body:has(.c-gnav-wrap[open]) {
+  @include tool.max-screen(setting.$breakm - 1px) {
+    overflow: hidden;
+  }
+}
+
+.u-pc-none {
+  @include tool.min-screen(setting.$breakm) {
+    display: none;
+  }
+}
+
+.u-pc-only {
+  @include tool.max-screen(setting.$breakm - 1px) {
+    display: none;
+  }
+}

@@ -1,0 +1,123 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+	const news = await getCollection('news');
+	return news.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+import setting from '@/config/setting.json'
+import Mailto from '@/components/Mailto.astro'
+const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
+const url = protocol + setting.site.host + decodeURI(Astro.url.pathname)
+---
+<Layout
+	title={entry.data.title ? entry.data.title : 'お知らせ'}
+	pageType="single"
+	date = {entry.data.date}
+  update = {entry.data.update}
+	description = {entry.data.summary || entry.body.slice(0, 160).replace(/\n/g, "").replace(/\s+/g, " ")},
+  keywords = {entry.data.keywords}
+	>
+  <div class="o-center c-cnt-wrap u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">{entry.data.title ? entry.data.title : 'お知らせ'}</h1>
+		{entry.data.date && (
+			<div class="o-cluster u-mb-l">
+				<time
+					class="u-txt-sec"
+					datetime={new Date(entry.data.date)
+						.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+						.replaceAll('/', '-')}
+				>
+					<svg class="o-icon u-mr-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+						<!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+						<path
+							d="M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32V64H160V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z"
+							fill="currentColor"></path>
+					</svg><span class="c-content-m u-fnt-en">
+						{
+							new Date(entry.data.date)
+								.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+								.replaceAll('/', '.')
+						}
+					</span>
+				</time>
+				{entry.data.update && (
+					<time
+						class="u-txt-sec"
+						datetime={new Date(entry.data.update)
+							.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+							.replaceAll('/', '-')}
+					>
+						<svg class="o-icon u-mr-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+							<path
+								d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"
+								fill="currentColor"></path>
+						</svg><span class="c-content-m u-fnt-en">
+							{
+								new Date(entry.data.update)
+									.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+									.replaceAll('/', '.')
+							}
+						</span>
+					</time>
+				)}
+			</div>
+		)}
+    <article class="c-entry">
+      <Content />
+    </article>
+    <h2 class="c-sec-heading">シェア・共有</h2>
+    <div class="c-share-bx u-mb-l">
+      <input
+        class="o-box c-input c-content-l u-py-s u-pr-s u-pl-xl u-w-max"
+        readonly=""
+        aria-readonly="true"
+        type="text"
+        value={url}
+      />
+      <svg class="o-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+        <path
+          d="M64 464H288c8.8 0 16-7.2 16-16V384h48v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h64v48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16zM224 304H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H224c-8.8 0-16 7.2-16 16V288c0 8.8 7.2 16 16 16zm-64-16V64c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V288c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64z"
+          fill="currentColor"></path>
+      </svg>
+    </div>
+    <h3 class="c-ter-heading">本件に関するお問い合わせ先</h3>
+    <div class="c-content-l">
+      <span class="u-fnt-wx">{setting.company.name}</span><br />
+      〒{setting.company.zip}
+      {setting.company.address}<br />
+      <span class="u-fnt-en">
+        Email: <Mailto insertClass="c-lnk-txt u-fnt-en" address={setting.mail.primary} />
+      </span><br />
+      <a class="c-lnk-txt" data-astro-prefetch="tap" href="/inquiry/">お問い合わせフォーム</a>
+    </div>
+  </div>
+</Layout>
+<script>
+  ;(() => {
+    const elems = document.querySelectorAll<HTMLInputElement>('.c-share-bx input')
+    const elemArray = Array.prototype.slice.call(elems, 0) as HTMLInputElement[]
+
+    function selectAll(target: HTMLInputElement): void {
+      target.select()
+    }
+
+    elemArray.forEach((target: HTMLInputElement) => {
+      target.addEventListener('click', () => {
+        selectAll(target)
+      })
+      target.addEventListener('focus', () => {
+        selectAll(target)
+      })
+    })
+  })()
+</script>

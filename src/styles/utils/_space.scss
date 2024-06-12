@@ -1,0 +1,95 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+$positions: (top, right, bottom, left);
+$targets: (
+  cluster: cluster-gutter,
+  sidebar: sidebar-gutter,
+  stack: stack-mt,
+  center: center-pd,
+) !default;
+
+@each $key, $name in setting.$spaceScale {
+  @each $position in $positions {
+    $y_or_x: if($position == top or $position == bottom, y, x);
+    $prefix: if($position == top, t, if($position == right, r, if($position == bottom, b, l)));
+    $is_target: if(
+      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl,
+      true,
+      false
+    );
+    @if $is_target {
+      .u-m#{$prefix}-#{$key},
+      .u-m#{$y_or_x}-#{$key},
+      .u-mg-#{$key} {
+        margin-#{$position}: var(--space-#{$key});
+      }
+    } @else if $key == auto {
+      .u-m#{$prefix}-#{$key},
+      .u-m#{$y_or_x}-#{$key},
+      .u-mg-#{$key} {
+        margin-#{$position}: var(--space-#{$key});
+      }
+    }
+  }
+}
+
+@each $key, $name in setting.$spaceScale {
+  @each $position in $positions {
+    $y_or_x: if($position == top or $position == bottom, y, x);
+    $prefix: if($position == top, t, if($position == right, r, if($position == bottom, b, l)));
+    $is_target: if(
+      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl,
+      true,
+      false
+    );
+    @if $is_target {
+      .u-p#{$prefix}-#{$key},
+      .u-p#{$y_or_x}-#{$key},
+      .u-pd-#{$key} {
+        padding-#{$position}: var(--space-#{$key});
+      }
+    }
+  }
+}
+
+.u-pr-clamp,
+.u-px-clamp {
+  padding-right: var(--space-clamp);
+}
+
+.u-pl-clamp,
+.u-px-clamp {
+  padding-left: var(--space-clamp);
+}
+
+@each $key, $name in setting.$spaceScale {
+  $is_target: if($key == 2xs or $key == xs or $key == s or $key == m or $key == l, true, false);
+  @if $is_target {
+    .u-space-#{$key} {
+      --custom-space: var(--space-#{$key});
+    }
+  }
+}
+
+.u-space-clamp {
+  --custom-space: var(--space-clamp);
+}
+
+.u-space-none {
+  --custom-space: 0;
+}
+
+@each $prefix, $target in $targets {
+  .u-insert-#{$prefix} {
+    --#{$target}: var(--custom-space);
+  }
+}
+
+.u-mw-r {
+  max-width: setting.$readableLength;
+}
+
+.u-w-max {
+  width: 100%;
+}

@@ -1,0 +1,499 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+	const stories = await getCollection('stories');
+	return stories.map((entry: any) => ({
+		params: { category: entry.data.category.slug ? encodeURIComponent(entry.data.category.slug) : 'uncategorized', slug: entry.slug }, props: { entry },
+  }));
+}
+import setting from '@/config/setting.json'
+import { Picture } from 'astro:assets'
+import defaultProf from '@/images/profile_img.jpg'
+import Toc from '@/components/Toc.astro';
+import { getRelativeDate } from '@/utils/dateUtils.js'
+
+
+const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
+const url = protocol + setting.site.host + decodeURI(Astro.url.pathname)
+
+const { entry } = Astro.props as { entry: any };
+const { Content, remarkPluginFrontmatter, headings } = await (entry as any).render();
+
+const allPosts = await getCollection('stories');
+for (const post of allPosts) {
+  const { remarkPluginFrontmatter } = await post.render()
+  post.data.minutesRead = remarkPluginFrontmatter.minutesRead
+}
+const filteredPosts = allPosts.filter(post => post.slug !== entry.slug);
+const allPostsSorted = filteredPosts.sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+)
+const lastPosts = allPostsSorted.slice(0, 3)
+
+function shuffleArray(array: any) {
+	let currentIndex = array.length,
+		temporaryValue: any,
+		randomIndex: any;
+
+	while (currentIndex !== 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
+}
+
+const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4)
+const imgPath = entry.data.image.src.match(/\/public\/.+?\.(png|jpg|jpeg|gif)/)[0] || '';
+
+---
+<Layout
+	title={entry.data.title || '名称未設定'}
+	pageType='single'
+	catLabel={entry.data.category.label || '未分類'}
+	description = {entry.data.summary || entry.body.slice(0, 160).replace(/\n/g, "").replace(/\s+/g, " ")},
+  keywords = {entry.data.keywords},
+	imgUrl = {imgPath.replace(/^\/public/, '') || ''},
+	imgSq = {entry.data.imageSq || ''}
+  imgW = {entry.data.image.width / 2},
+  imgH = {entry.data.image.height / 2},
+  date = {entry.data.date},
+  update = {entry.data.update}
+>
+	<div class="o-center c-cnt-wrap u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">{entry.data.title || '名称未設定'}</h1>
+    <div class="c-pre-bio u-mb-l">
+      <Picture
+        pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+        src={defaultProf}
+        formats={['avif', 'webp']}
+        fetchpriority="low"
+        alt=""
+      />
+      <span class="o-stack u-insert-stack u-space-none">
+        <span class="c-content-m u-fnt-wx">長谷川 雄治</span>
+				{entry.data.date && (
+        <span class="o-cluster">
+          <time class="u-txt-sec"
+						datetime={new Date(entry.data.date)
+						.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+						.replaceAll('/', '-')}
+					>
+            <svg class="o-icon u-mr-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                d="M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32V64H160V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z"
+                fill="currentColor"></path>
+            </svg><span class="c-content-m u-fnt-en">
+							{
+								new Date(entry.data.date)
+								.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+								.replaceAll('/', '.')
+							}
+						</span>
+          </time>
+					{entry.data.update && (
+          <time class="u-txt-sec"
+						datetime={new Date(entry.data.update)
+							.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+							.replaceAll('/', '-')}
+					>
+            <svg class="o-icon u-mr-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"
+                fill="currentColor"></path>
+            </svg><span class="c-content-m u-fnt-en">
+							{
+								new Date(entry.data.update)
+									.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+									.replaceAll('/', '.')
+							}
+						</span>
+          </time>
+					)}
+        </span>
+				)}
+      </span>
+    </div>
+    <Picture
+      pictureAttributes={{ class: 'o-frame js-cnt-v-auto u-mb-l' }}
+      src={entry.data.image}
+      width={entry.data.image.width / 2}
+      height={entry.data.image.height / 2}
+      widths={[240, 480, 540, 720, 1024, 1440, entry.data.image.width / 2]}
+      sizes={`(max-width: 360px) 240px, (max-width: 520px) 480px, (max-width: 720px) 540px, (max-width: 960px) 768px, (max-width: 1280px) 1024px, (max-width: 1536px) 1440px, ${entry.data.image.width / 2}px`}
+      formats={['avif', 'webp']}
+      fetchpriority="low"
+      alt=""
+    />
+    <div class="c-content-m u-txt-sec u-mb-l">
+      読了見込
+      <span class="u-ml-xs u-fnt-en">{remarkPluginFrontmatter.minutesRead.toString().replace(/\D/g, '')}</span>分
+    </div>
+    <article class="c-entry u-mb-l">
+			{entry.data.summary && (
+				<div class="c-summary c-content-l u-pd-m u-mb-l">
+					{entry.data.summary}
+				</div>
+			)}
+			{Array.isArray(headings) && headings.length > 0 && <Toc headings={headings} />}
+			<Content />
+    </article>
+		{entry.data.category && (
+			<a class="c-content-l c-cat-link u-pd-m u-dsp-ibc u-lnh-n" href={`/stories/category/${encodeURIComponent(entry.data.category.slug)}/`} data-astro-prefetch="tap">
+				<svg class="o-icon u-mr-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+					<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+					<path
+						d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z"
+						fill="currentColor"></path>
+				</svg>{entry.data.category.label}
+			</a>
+		)}
+		{entry.data.tags && (
+			<ul class="o-cluster u-insert-cluster u-space-s">
+				{entry.data.tags.map(tag => (
+					<li>
+						<a class="c-content-l c-tag-link u-pd-m u-dsp-blc u-lnh-n" href={`/stories/tag/${encodeURIComponent(tag.slug)}/`} data-astro-prefetch="tap">
+							<span class="u-mr-xs">#</span>{tag.label}
+						</a>
+					</li>
+				))}
+			</ul>
+		)}
+    <h2 class="c-sec-heading">シェア・共有</h2>
+    <div class="c-share-bx u-mb-l">
+      <input
+        class="o-box c-input c-content-l u-py-s u-pr-s u-pl-xl u-w-max"
+        readonly=""
+        aria-readonly="true"
+        type="text"
+        value={url}
+      />
+      <svg class="o-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+        <path
+          d="M64 464H288c8.8 0 16-7.2 16-16V384h48v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h64v48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16zM224 304H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H224c-8.8 0-16 7.2-16 16V288c0 8.8 7.2 16 16 16zm-64-16V64c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V288c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64z"
+          fill="currentColor"></path>
+      </svg>
+    </div>
+    <div class="o-sidebar">
+      <div class="c-bio-pict u-mx-auto">
+        <Picture
+          pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+          src={defaultProf}
+          formats={['avif', 'webp']}
+          fetchpriority="low"
+          alt=""
+        />
+      </div>
+      <div class="o-stack c-bio-txt u-mx-auto">
+        <p class="c-display-xs u-mx-auto u-dsp-tbl">長谷川 雄治（仮面ライター）</p>
+        <p class="c-content-l u-mx-auto u-mb-s u-dsp-tbl">Yuji Hasegawa (KamenWriter)</p>
+        <div class="c-content-m u-mb-m">
+          昭和63年生まれ。大阪電気通信大学 総合情報学部 デジタルゲーム学科卒。<br />
+          2011年からWeb制作に従事。コーディングやWordPressのカスタマイズ等を主に経験を積む。2013年、仮面ライターとして独立開業。マーケティングや企画、上流も下流も幅広く対応。<br
+          />
+          コーディングとコンテンツ制作の同時提供を考えるヘンな人。
+        </div>
+        <div class="o-cluster u-insert-cluster u-space-xs u-mx-auto">
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://www.facebook.com/yuuji.hasegawa/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Facebook"
+            aria-label="Facebookへ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">Facebookへ</span>
+          </a>
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://twitter.com/kamenwriter01"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Twitter"
+            aria-label="Twitterへ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">Twitterへ</span>
+          </a>
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://www.instagram.com/kamenwriter/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+            aria-label="Instagramへ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+              <path
+                d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">Instagramへ</span>
+          </a>
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://www.linkedin.com/in/kamenwriter/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Linkedin"
+            aria-label="Linkedinへ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">Linkedinへ</span>
+          </a>
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://note.com/kamenwriter"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="note.com"
+            aria-label="note.comへ"
+          >
+            <svg viewBox="0 0 548 619" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M235.044 272.175H162.151C153.522 272.175 150.662 271.716 146.245 270.388C134.322 266.865 125.028 254.941 125.028 240.797C125.028 226.652 134.322 214.755 146.22 211.18C150.662 209.878 153.522 209.444 162.151 209.444H209.41V162.134C209.41 153.504 209.87 150.645 211.198 146.228C214.721 134.075 226.644 125.011 240.789 125.011C254.908 125.011 266.856 134.279 270.405 146.228C271.707 150.645 272.167 153.504 272.167 162.134V235.027C272.167 239.444 272.167 243.861 271.273 247.844C269.85 253.497 266.921 258.659 262.799 262.781C258.676 266.904 253.514 269.832 247.861 271.256C243.878 272.15 239.461 272.175 235.044 272.175ZM469.194 539.9H78.2033V195.504C78.2033 191.087 79.7352 187.334 82.8246 184.27L184.236 82.8328C185.698 81.3353 187.452 80.1528 189.388 79.3581C191.324 78.5634 193.403 78.1732 195.496 78.2116H469.194V539.9ZM18.9955 137.649C8.60415 148.015 1.78721 161.062 0.434037 175.64C0.155072 178.79 0.010262 181.95 0 185.112L0 574.572C0 579.652 0.229785 582.282 0.434037 584.274C2.22125 600.869 17.2338 615.882 33.8039 617.644C35.7953 617.848 38.4506 618.078 43.5059 618.078H503.892C508.973 618.078 511.628 617.848 513.594 617.644C530.189 615.856 545.202 600.844 546.964 584.274C547.194 582.282 547.398 579.652 547.398 574.572V43.5141C547.398 38.4078 547.194 35.778 546.964 33.7866C545.177 17.2165 530.164 2.20395 513.619 0.442269C510.388 0.107417 507.14 -0.0375109 503.892 0.00823162H185.104C181.933 0.0185225 178.764 0.171868 175.606 0.467801C161.002 1.76991 147.981 8.63792 137.59 19.0038L18.9955 137.649Z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">note.comへ</span>
+          </a>
+          <a
+            class="c-ft-sns js-cnt-v-auto"
+            href="https://github.com/Yuuji-Hasegawa"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub"
+            aria-label="Githubへ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"
+              ><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+                fill="currentColor"></path>
+            </svg>
+            <span class="sr-only">GitHubへ</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+	{lastPosts.length > 0 && (
+		<div class="o-center u-insert-center u-space-clamp">
+    <h2 class="c-sec-heading u-txt-ctr u-fnt-en u-txt-thn">What's New</h2>
+    <ul class="o-grid :tri">
+			{
+        lastPosts.map((post) => (
+          <li>
+            <a
+              class="o-stack c-card-link u-insert-stack u-space-m"
+              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              data-astro-prefetch="tap"
+            >
+              <Picture
+                pictureAttributes={{ class: 'o-frame js-cnt-v-auto' }}
+                src={post.data.image as any}
+                width={post.data.image.width / 2}
+                height={post.data.image.height / 2}
+                widths={[240, 480, 540, 720, 1024, 1440, post.data.image.width / 2]}
+                sizes={`(max-width: 360px) 240px, (max-width: 520px) 480px, (max-width: 720px) 540px, (max-width: 960px) 768px, (max-width: 1280px) 1024px, (max-width: 1536px) 1440px, ${post.data.image.width / 2}px`}
+                formats={['avif', 'webp']}
+                fetchpriority="low"
+                alt=""
+              />
+              <span class="c-card-link__detail">
+                <Picture
+                  pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+                  src={defaultProf}
+                  formats={['avif', 'webp']}
+                  fetchpriority="low"
+                  alt=""
+                />
+                <span class="o-stack u-insert-stack u-space-none">
+                  <span class="c-content-l u-txt-trim :twoline">{post.data.title ? post.data.title : 'お知らせ'}</span>
+                  {post.data.category.label && (
+                    <span class="o-box c-suppl-l c-cat-label u-px-xs u-my-s">{post.data.category.label}</span>
+                  )}
+                  <span class="c-label-l u-txt-sec">長谷川 雄治</span>
+                  {post.data.date && (
+                    <span class="c-suppl-l u-txt-sec">
+                      読了見込
+                      <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
+                      <time
+                        datetime={new Date(post.data.date)
+                          .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                          .replaceAll('/', '-')}
+                      >
+                        <span class="u-fnt-en">
+                          {
+                            getRelativeDate(
+                              new Date(post.data.date)
+                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                .replaceAll('/', '-'),
+                            ).number
+                          }
+                        </span>
+                        {
+                          getRelativeDate(
+                            new Date(post.data.date)
+                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                              .replaceAll('/', '-'),
+                          ).text
+                        }
+                      </time>
+                    </span>
+                  )}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+		{shufflePosts.length > 0 && (
+			<h2 class="c-sec-heading u-txt-ctr u-fnt-en u-txt-thn">Chaotic Alb</h2>
+    <ul class="o-grid :quart u-mb-xl">
+      {
+        shufflePosts.map((post: any) => (
+          <li>
+            <a
+              class="o-stack c-card-link u-insert-stack u-space-m"
+              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              data-astro-prefetch="tap"
+            >
+              <Picture
+                pictureAttributes={{ class: 'o-frame js-cnt-v-auto' }}
+                src={post.data.image as any}
+                width={post.data.image.width / 2}
+                height={post.data.image.height / 2}
+                widths={[240, 480, 540, 720, 1024, 1440, post.data.image.width / 2]}
+                sizes={`(max-width: 360px) 240px, (max-width: 520px) 480px, (max-width: 720px) 540px, (max-width: 960px) 768px, (max-width: 1280px) 1024px, (max-width: 1536px) 1440px, ${post.data.image.width / 2}px`}
+                formats={['avif', 'webp']}
+                fetchpriority="low"
+                alt=""
+              />
+              <span class="c-card-link__detail">
+                <Picture
+                  pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+                  src={defaultProf}
+                  formats={['avif', 'webp']}
+                  fetchpriority="low"
+                  alt=""
+                />
+                <span class="o-stack u-insert-stack u-space-none">
+                  <span class="c-content-l u-txt-trim :twoline">{post.data.title ? post.data.title : 'お知らせ'}</span>
+                  {post.data.category.label && (
+                    <span class="o-box c-suppl-l c-cat-label u-px-xs u-my-s">{post.data.category.label}</span>
+                  )}
+                  <span class="c-label-l u-txt-sec">長谷川 雄治</span>
+                  {post.data.date && (
+                    <span class="c-suppl-l u-txt-sec">
+                      読了見込
+                      <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
+                      <time
+                        datetime={new Date(post.data.date)
+                          .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                          .replaceAll('/', '-')}
+                      >
+                        <span class="u-fnt-en">
+                          {
+                            getRelativeDate(
+                              new Date(post.data.date)
+                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                .replaceAll('/', '-'),
+                            ).number
+                          }
+                        </span>
+                        {
+                          getRelativeDate(
+                            new Date(post.data.date)
+                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                              .replaceAll('/', '-'),
+                          ).text
+                        }
+                      </time>
+                    </span>
+                  )}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+		)}
+    <a
+      href="/stories/"
+      data-astro-prefetch="tap"
+      class="o-box c-more-btn c-content-l u-dsp-flx u-py-s u-px-m u-flx-y-ctr u-mx-auto"
+    >
+      記事一覧
+      <svg class="u-ml-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+        <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+        <path
+          d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+          fill="currentColor"></path>
+      </svg>
+    </a>
+  </div>
+	)}
+</Layout>
+<script>
+  ;(() => {
+		function moveToc() {
+			const entry = document.querySelector('.c-entry');
+			const toc = document.querySelector('.c-toc');
+			if(entry) {
+				const firstHeading = document.querySelector('h2, h3');
+				if (firstHeading && toc) {
+					entry.insertBefore(toc, firstHeading);
+					toc.removeAttribute('aria-hidden');
+					toc.removeAttribute('tabindex');
+				}
+			}
+		}
+    const elems = document.querySelectorAll<HTMLInputElement>('.c-share-bx input')
+    const elemArray = Array.prototype.slice.call(elems, 0) as HTMLInputElement[]
+
+    function selectAll(target: HTMLInputElement): void {
+      target.select()
+    }
+
+		document.addEventListener('DOMContentLoaded', () => {
+			moveToc();
+		});
+
+    elemArray.forEach((target: HTMLInputElement) => {
+      target.addEventListener('click', () => {
+        selectAll(target)
+      })
+      target.addEventListener('focus', () => {
+        selectAll(target)
+      })
+    })
+  })()
+</script>

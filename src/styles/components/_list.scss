@@ -1,0 +1,78 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-entry > ul,
+.c-dsc-list {
+  padding-left: setting.f-get-space(l, em);
+  list-style-position: outside;
+  list-style-type: disc;
+}
+
+.c-cnt-list,
+.c-entry > ol {
+  counter-set: primary;
+
+  & > li {
+    position: relative;
+    padding-left: calc(2 * setting.f-get-space(m, em));
+    counter-increment: primary;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-family: setting.$font-family-en;
+      font-weight: inherit;
+      content: counter(primary, decimal-leading-zero) '.';
+    }
+  }
+
+  ol {
+    padding-left: 0;
+  }
+}
+
+.\:sec,
+.c-entry > ol > ol {
+  counter-set: secondary;
+
+  & > li {
+    padding-left: calc(setting.f-get-space(l, em) + setting.f-get-space(m, em));
+    counter-increment: secondary;
+
+    &::before {
+      content: '(' counter(secondary, decimal-leading-zero) ')';
+    }
+  }
+}
+
+.\:sec tr {
+  counter-increment: secondary;
+
+  & th {
+    position: relative;
+    padding-left: calc(setting.f-get-space(l, em) + setting.f-get-space(m, em) + setting.f-get-space(s, em));
+
+    &::before {
+      position: absolute;
+      top: setting.f-get-space(s);
+      left: setting.f-get-space(s);
+      font-family: setting.$font-family-en;
+      font-weight: inherit;
+      content: '(' counter(secondary, decimal-leading-zero) ')';
+    }
+  }
+}
+
+.c-note {
+  position: relative;
+  padding-left: setting.f-get-space(l, em);
+
+  &::before {
+    position: absolute;
+    left: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    content: '※';
+  }
+}

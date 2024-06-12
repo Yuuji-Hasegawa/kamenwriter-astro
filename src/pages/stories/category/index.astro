@@ -1,0 +1,36 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+const allPosts = await getCollection('stories')
+const categoriesMap = new Map()
+
+allPosts.forEach((post) => {
+  const category = post.data.category || {}
+  const slug = category.slug || 'uncategorized'
+  const label = category.label?.trim() || '未分類'
+
+  categoriesMap.set(slug, label)
+})
+const uniqueCategories = Array.from(categoriesMap.entries()).map(([slug, label]) => ({ slug, label }))
+---
+
+<Layout title="カテゴリー一覧" pageType="archive">
+  <div class="o-center u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">カテゴリー一覧</h1>
+    <ul class="o-stack u-insert-stack u-space-s">
+      {
+        uniqueCategories.map((category) => (
+          <li>
+            <a
+              class="c-display-2xs c-cat-link u-pd-m u-dsp-blc u-lnh-n"
+              href={`/stories/category/${encodeURIComponent(category.slug)}/`}
+              data-astro-prefetch="tap"
+            >
+              {category.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>

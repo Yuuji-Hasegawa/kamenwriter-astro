@@ -1,0 +1,46 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+import Pagination from '@/components/Pagination.astro'
+export const postsPerPage = 10
+export async function getStaticPaths({ paginate }) {
+  const allNews = await getCollection('news')
+  const allNewsSorted = allNews.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+  return paginate(allNewsSorted, { pageSize: postsPerPage })
+}
+interface PaginationProps {
+  data: any
+  currentPage: number
+  lastPage: number
+}
+
+const { page }: { page: PaginationProps } = Astro.props
+---
+
+<Layout title="お知らせ" pageType="paged">
+  <div class="o-center u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">お知らせ</h1>
+    <ul class="o-stack u-insert-stack u-space-m">
+      {
+        page.data.map((news: { data: { date: string | number | Date; title: unknown }; slug: any }) => (
+          <li class="o-sidebar u-flx-y-b">
+            <time
+              class="c-content-l u-fnt-en u-txt-thn"
+              datetime={new Date(news.data.date)
+                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                .replaceAll('/', '-')}
+            >
+              {new Date(news.data.date)
+                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                .replaceAll('/', '.')}
+            </time>
+            <a class="c-news-link c-content-l u-txt-l" href={`/news/${news.slug}/`} data-astro-prefetch="tap">
+              {news.data.title ? news.data.title : 'お知らせ'}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <Pagination pagePath={Astro.url.pathname} currentPage={page.currentPage} lastPage={page.lastPage} />
+</Layout>

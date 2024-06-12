@@ -1,0 +1,59 @@
+{
+	"name": "仮面ライター",
+	"short_name": "仮面ライター",
+	"description": "ヘンな大阪のWeb屋さん",
+	"start_url": "/?utm_source=home-screen&utm_medium=pwa",
+	"display": "standalone",
+	"lang": "ja",
+	"dir": "auto",
+	"orientation": "any",
+	"theme_color": "#030303",
+	"background_color": "#030303",
+	"icons": [
+		{
+			"src": "/pwa/icons/icon-72x72.png",
+			"sizes": "72x72",
+			"type": "image/png"
+		},
+		{
+			"src": "/pwa/icons/icon-96x96.png",
+			"sizes": "96x96",
+			"type": "image/png"
+		},
+		{
+			"src": "/pwa/icons/icon-144x144.png",
+			"sizes": "144x144",
+			"type": "image/png"
+		},
+		{
+			"src": "/pwa/icons/icon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/pwa/icons/icon-384x384.png",
+			"sizes": "384x384",
+			"type": "image/png"
+		},
+		{
+			"src": "/pwa/icons/icon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/pwa/screenshot-sp.png",
+			"sizes": "640x1096",
+			"type": "image/png",
+			"form_factor": "narrow"
+		},
+		{
+			"src": "/pwa/screenshot-pc.png",
+			"sizes": "1440x822",
+			"type": "image/png",
+			"form_factor": "wide"
+		}
+	],
+	"splash_pages": null
+}

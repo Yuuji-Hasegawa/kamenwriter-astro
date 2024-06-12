@@ -1,0 +1,7 @@
+@use '../settings' as setting;
+
+.o-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sidebar-gutter, setting.f-get-space(l));
+}

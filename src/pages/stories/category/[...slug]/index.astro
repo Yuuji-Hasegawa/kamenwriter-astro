@@ -1,0 +1,113 @@
+---
+import { Picture } from 'astro:assets'
+import defaultProf from '@/images/profile_img.jpg'
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+import Pagination from '@/components/Pagination.astro'
+import { getRelativeDate } from '@/utils/dateUtils.js'
+
+export const postsPerPage = 12
+export async function getStaticPaths() {
+  const allPosts = await getCollection('stories')
+  for (const post of allPosts) {
+    const { remarkPluginFrontmatter } = await post.render()
+    post.data.minutesRead = remarkPluginFrontmatter.minutesRead
+  }
+  const uniqueCategories = [...new Set(allPosts.map((post) => post.data.category?.slug || 'uncategorized'))]
+
+  return uniqueCategories.map((category) => {
+    const filteredPosts = allPosts.filter((post) => (post.data.category?.slug || 'uncategorized') === category)
+    const totalPage = Math.ceil(filteredPosts.length / postsPerPage)
+    const allPostsSorted = filteredPosts.sort(
+      (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+    )
+
+    return {
+      params: { slug: category },
+      props: {
+        allPostsSorted,
+        totalPage,
+        categoryLabel: allPostsSorted[0]?.data.category?.label || '未分類',
+      },
+    }
+  })
+}
+const { allPostsSorted, totalPage, categoryLabel } = Astro.props
+const firstPostsList = allPostsSorted.slice(0, postsPerPage)
+---
+
+<Layout title={categoryLabel} pageType="archive">
+  <div class="o-center u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">{categoryLabel}</h1>
+    <ul class="o-grid :tri">
+      {
+        firstPostsList.map((post) => (
+          <li>
+            <a
+              class="o-stack c-card-link u-insert-stack u-space-m"
+              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              data-astro-prefetch="tap"
+            >
+              <Picture
+                pictureAttributes={{ class: 'o-frame js-cnt-v-auto' }}
+                src={post.data.image as any}
+                width={post.data.image.width / 2}
+                height={post.data.image.height / 2}
+                widths={[240, 480, 540, 720, 1024, 1440, post.data.image.width / 2]}
+                sizes={`(max-width: 360px) 240px, (max-width: 520px) 480px, (max-width: 720px) 540px, (max-width: 960px) 768px, (max-width: 1280px) 1024px, (max-width: 1536px) 1440px, ${post.data.image.width / 2}px`}
+                formats={['avif', 'webp']}
+                fetchpriority="low"
+                alt=""
+              />
+              <span class="c-card-link__detail">
+                <Picture
+                  pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+                  src={defaultProf}
+                  formats={['avif', 'webp']}
+                  fetchpriority="low"
+                  alt=""
+                />
+                <span class="o-stack u-insert-stack u-space-none">
+                  <span class="c-content-l u-txt-trim :twoline">{post.data.title ? post.data.title : 'お知らせ'}</span>
+                  {post.data.category.label && (
+                    <span class="o-box c-suppl-l c-cat-label u-px-xs u-my-s">{post.data.category.label}</span>
+                  )}
+                  <span class="c-label-l u-txt-sec">長谷川 雄治</span>
+                  {post.data.date && (
+                    <span class="c-suppl-l u-txt-sec">
+                      読了見込
+                      <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
+                      <time
+                        datetime={new Date(post.data.date)
+                          .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                          .replaceAll('/', '-')}
+                      >
+                        <span class="u-fnt-en">
+                          {
+                            getRelativeDate(
+                              new Date(post.data.date)
+                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                .replaceAll('/', '-'),
+                            ).number
+                          }
+                        </span>
+                        {
+                          getRelativeDate(
+                            new Date(post.data.date)
+                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                              .replaceAll('/', '-'),
+                          ).text
+                        }
+                      </time>
+                    </span>
+                  )}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <Pagination pagePath={Astro.url.pathname} currentPage="1" lastPage={totalPage} />
+</Layout>

@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+$displays: (
+  blc: block,
+  ibc: inline-block,
+  flx: flex,
+  ifx: inline-flex,
+  tbl: table,
+) !default;
+
+@each $prefix, $display in $displays {
+  .u-dsp-#{$prefix} {
+    display: $display;
+  }
+}
+
+.u-flx-shn {
+  flex-shrink: 0;
+}
+
+.u-flx-ctr {
+  justify-content: center;
+}
+
+.u-flx-y-ctr {
+  align-items: center;
+}
+
+.u-flx-y-b {
+  align-items: baseline;
+}
+
+.js-cnt-v-auto {
+  content-visibility: auto;
+  contain: content;
+}

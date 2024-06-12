@@ -1,0 +1,9 @@
+@use '../settings' as setting;
+
+.o-center {
+  box-sizing: content-box;
+  padding-right: var(--center-pd, setting.f-get-space(m));
+  padding-left: var(--center-pd, setting.f-get-space(m));
+  margin-right: auto;
+  margin-left: auto;
+}

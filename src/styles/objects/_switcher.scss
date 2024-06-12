@@ -1,0 +1,13 @@
+@use '../settings' as setting;
+
+.o-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--switcher-gutter, setting.f-get-space(l));
+
+  & > * {
+    flex-basis: calc((setting.$breakm - 100%) * 999);
+    flex-grow: 1;
+    max-width: 100%;
+  }
+}

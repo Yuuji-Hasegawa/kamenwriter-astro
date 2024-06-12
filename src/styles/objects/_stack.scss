@@ -1,0 +1,11 @@
+@use '../settings' as setting;
+
+.o-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  & > * + * {
+    margin-top: var(--stack-mt, 0);
+  }
+}

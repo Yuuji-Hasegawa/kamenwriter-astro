@@ -1,0 +1,196 @@
+---
+import setting from '@/config/setting.json'
+const pathname = Astro.url.pathname
+const pathSegments = pathname.split('/').filter((segment) => segment !== '')
+const pathDepth = pathSegments.length
+
+const {
+  title = '',
+  pageType = '',
+  catLabel = '',
+  description = '',
+  imgPath = '',
+  imgW = '',
+  imgH = '',
+  date = '',
+  update = '',
+} = Astro.props
+
+const pubDate = date ? date + 'T00:00:00+09:00' : ''
+const updateDate = update ? update + 'T00:00:00+09:00' : pubDate
+const category = catLabel ? catLabel : 'お知らせ'
+
+let breadArray = [
+  {
+    '@type': 'ListItem',
+    position: 1,
+    item: {
+      '@id': new URL(Astro.site).href,
+      name: 'トップページ',
+    },
+  },
+]
+if (pageType === 'notFound') {
+  breadArray.push({
+    '@type': 'ListItem',
+    position: 2,
+    item: {
+      '@id': new URL(decodeURI(pathname), Astro.site).href,
+      name: 'お探しのページは見つかりませんでした',
+    },
+  })
+} else if (pageType === 'page') {
+  breadArray.push({
+    '@type': 'ListItem',
+    position: 2,
+    item: {
+      '@id': new URL(decodeURI(pathname), Astro.site).href,
+      name: title,
+    },
+  })
+} else if (pageType !== 'notFound' || pageType !== 'page') {
+  breadArray.push({
+    '@type': 'ListItem',
+    position: 2,
+    item: {
+      '@id': new URL(`${pathSegments[0]}/`, Astro.site).href,
+      name: pathSegments[0] === 'news' ? 'お知らせ' : '記事・トピック',
+    },
+  })
+  if (pageType === 'archive' && pathDepth === 2) {
+    breadArray.push({
+      '@type': 'ListItem',
+      position: 3,
+      item: {
+        '@id': new URL(decodeURI(pathname), Astro.site).href,
+        name: title,
+      },
+    })
+  } else if (pageType === 'archive' && pathDepth === 3) {
+    breadArray.push({
+      '@type': 'ListItem',
+      position: 3,
+      item: {
+        '@id': new URL(decodeURI(pathname), Astro.site).href,
+        name: title,
+      },
+    })
+  } else if (pageType === 'paged' && pathDepth === 5) {
+    breadArray.push({
+      '@type': 'ListItem',
+      position: 3,
+      item: {
+        '@id': new URL(`/stories/${pathSegments[1]}/${pathSegments[2]}/`, Astro.site).href,
+        name: title,
+      },
+    })
+  } else if (pageType === 'single' && pathDepth === 2) {
+    breadArray.push({
+      '@type': 'ListItem',
+      position: 3,
+      item: {
+        '@id': new URL(decodeURI(pathname), Astro.site).href,
+        name: title,
+      },
+    })
+  } else if (pageType === 'single' && pathDepth === 3) {
+    breadArray.push(
+      {
+        '@type': 'ListItem',
+        position: 3,
+        item: {
+          '@id': new URL(`/stories/category/${pathSegments[1]}/`, Astro.site).href,
+          name: catLabel,
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        item: {
+          '@id': new URL(decodeURI(pathname), Astro.site).href,
+          name: title,
+        },
+      },
+    )
+  }
+}
+
+const breadJson = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadArray,
+}
+
+const contentJson = {
+  '@context': 'http://schema.org',
+  '@type': 'NewsArticle',
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': new URL(decodeURI(pathname), Astro.site).href,
+  },
+  name: title,
+  headline: title,
+  image: [
+    {
+      '@type': 'ImageObject',
+      url: imgPath,
+      width: imgW,
+      height: imgH,
+    },
+  ],
+  articleSection: category,
+  datePublished: pubDate,
+  dateModified: updateDate,
+  author: {
+    '@type': 'Person',
+    name: setting.company.owner,
+    url: 'https://kamenwriter.com',
+    sameAs: [
+      'https://www.facebook.com/yuuji.hasegawa/',
+      'https://twitter.com/kamenwriter01',
+      'https://www.instagram.com/kamenwriter/',
+      'https://www.linkedin.com/in/kamenwriter/',
+      'https://note.com/kamenwriter',
+      'https://github.com/Yuuji-Hasegawa',
+      'https://gravatar.com//kamenwriter01',
+      'https://www.shin-kamenwriter.com',
+    ],
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: setting.company.name,
+    url: 'https://kamenwriter.com',
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/images/logo.svg', Astro.site).href,
+      width: 25,
+      height: 32,
+    },
+    sameAs: [
+      'https://www.facebook.com/kamenwriter01',
+      'https://twitter.com/kamenwriter02',
+      'https://www.instagram.com/kamenwriter02/',
+      'https://bbns.jp/',
+      'https://nxz.kamenwriter.com/',
+    ],
+  },
+  description: description,
+}
+
+const frontJson = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: setting.site.title,
+  url: new URL(Astro.site).href,
+}
+let jsonLd = ``
+if (pathname === '') {
+  jsonLd = '[' + JSON.stringify(frontJson) + ',' + JSON.stringify(breadJson) + ']'
+} else if (pageType === 'single') {
+  jsonLd = '[' + JSON.stringify(breadJson) + ',' + JSON.stringify(contentJson) + ']'
+} else {
+  jsonLd = JSON.stringify(breadJson)
+}
+---
+
+<script is:inline type="application/ld+json" set:html={jsonLd} />

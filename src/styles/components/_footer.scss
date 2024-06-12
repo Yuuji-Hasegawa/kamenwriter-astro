@@ -1,0 +1,49 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-footer {
+  position: sticky;
+  top: 100svh;
+}
+
+.c-ft-bnr {
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.c-ft-link {
+  &:hover,
+  &:focus,
+  &:active {
+    color: map.get(setting.$brandColors, middle);
+    background: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}
+
+.c-ft-sns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(setting.f-get-space(l) * 2);
+  aspect-ratio: 1/1;
+  font-size: setting.f-get-space(l);
+  border-radius: 50%;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: map.get(setting.$brandColors, middle);
+    background: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+}

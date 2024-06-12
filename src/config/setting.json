@@ -1,0 +1,48 @@
+{
+  "site": {
+    "host": "kamenwriter.com",
+    "title": "仮面ライター",
+    "description": "ヘンな大阪のWeb屋さん",
+    "keywords": ["仮面ライター", "カメンライター"],
+    "themecolor": "#030303"
+  },
+  "facebook": {
+    "author": "https://www.facebook.com/yuuji.hasegawa/",
+    "publisher": "https://www.facebook.com/kamenwriter01/"
+  },
+  "twitter": {
+    "site": "@kamenwriter02",
+    "siteId": "1127061007",
+    "creator": "@kamenwriter01",
+    "creatorId": "187073661"
+  },
+  "company": {
+    "name": "仮面ライター",
+    "owner": "長谷川 雄治",
+    "zip": "567-0005",
+    "address": "大阪府茨木市五日市2",
+    "birth": "2013年04月26日",
+    "url": "https://kamenwriter.com",
+    "service": [
+      "Webサイト制作",
+      "Web/SNS活用サポート",
+      "コンテンツ制作",
+      "Webコンサルティング",
+      "ドメイン、サーバ取得代行"
+    ]
+  },
+  "mail": {
+    "primary": "info@kamenwriter.com",
+    "sendonly": "noreply@kamenwriter.com"
+  },
+  "terms": {
+    "company": "仮面ライター",
+    "domain": "kamenwriter.com",
+    "name": "仮面ライター",
+    "payterm": "12ヶ月間",
+    "court": "大阪地方裁判所",
+    "acount": "長谷川 雄治",
+    "publish": "2024年06月01日",
+    "update": []
+  }
+}

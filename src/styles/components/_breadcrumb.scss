@@ -1,0 +1,9 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-breadcrumb-item:not(:last-of-type)::after {
+  display: inline-block;
+  margin-left: setting.f-get-space(m);
+  font-weight: map.get(setting.$fontWeight, t);
+  content: '\203A';
+}

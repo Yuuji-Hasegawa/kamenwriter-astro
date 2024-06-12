@@ -1,0 +1,43 @@
+@use '../settings' as setting;
+@use 'sass:map';
+
+.o-grid {
+  display: grid;
+  gap: var(--grid-gutter, setting.f-get-space(l));
+
+  &.\:tri {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(
+        clamp(
+          clamp(
+            (100% - var(--grid-gutter, setting.f-get-space(l)) * 2) / 3,
+            map.get(setting.$breakpoints, underm),
+            (50% - var(--grid-gutter, setting.f-get-space(l)) * 0.5)
+          ),
+          map.get(setting.$breakpoints, underm),
+          clamp((50% - var(--grid-gutter, setting.f-get-space(l)) * 0.5), map.get(setting.$breakpoints, unders), 100%)
+        ),
+        1fr
+      )
+    );
+  }
+
+  &.\:quart {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(
+        clamp(
+          clamp(
+            (100% - var(--grid-gutter, setting.f-get-space(l)) * 3) / 4,
+            map.get(setting.$breakpoints, underm),
+            (50% - var(--grid-gutter, setting.f-get-space(l)) * 0.5)
+          ),
+          map.get(setting.$breakpoints, underm),
+          clamp((50% - var(--grid-gutter, setting.f-get-space(l)) * 0.5), map.get(setting.$breakpoints, unders), 100%)
+        ),
+        1fr
+      )
+    );
+  }
+}

@@ -1,0 +1,119 @@
+---
+const { currentPage, lastPage, pagePath } = Astro.props
+const current = parseInt(currentPage) || 1
+const firstPage = pagePath.replace(/page\/\d+\/$/, '')
+const paginationPath = `${firstPage}page/`
+const prevPage = current > 1 ? current - 1 : null
+const twoPrev = current > 2 ? current - 2 : null
+const nextPage = current < parseInt(lastPage) ? current + 1 : null
+const twoNext = current < parseInt(lastPage) - 1 ? current + 2 : null
+---
+
+<div class="o-center u-insert-center u-space-clamp">
+  <nav class="u-mt-xl" aria-label="Pagination">
+    <ol class="o-cluster u-space-s u-insert-cluster u-flx-ctr">
+			{prevPage && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-display-xs"
+					title="前のページ"
+					aria-label="前のページへ"
+					href={prevPage === 1 ? firstPage : `${paginationPath}${prevPage}/`}
+					data-astro-prefetch="tap"
+				>
+          <svg class="o-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+            <path
+              d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+              fill="currentColor"></path>
+          </svg>
+          <span class="sr-only">前のページへ</span>
+        </a>
+      </li>
+			)}
+			{twoPrev && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-content-l u-txt-thn"
+					title={`${twoPrev}ページ`}
+					aria-label={`${twoPrev}ページ目へ`}
+					href={twoPrev === 1 ? firstPage : `${paginationPath}${twoPrev}/`}
+					data-astro-prefetch="tap"
+				>
+					{twoPrev}
+				</a>
+      </li>
+			)}
+			{prevPage && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-content-l u-txt-thn"
+					title={`${prevPage}ページ`}
+					aria-label={`${prevPage}ページ目へ`}
+					href={prevPage === 1 ? firstPage : `${paginationPath}${prevPage}/`}
+					data-astro-prefetch="tap"
+				>
+					{prevPage}
+				</a>
+      </li>
+			)}
+      <li>
+        <a
+          class="o-box c-pager-btn c-content-l u-txt-thn"
+          aria-label="現在のページ"
+          aria-current="page"
+          title={`${current}ページ`}
+          href={current === 1 ? firstPage : `${paginationPath}${current}/`}
+					data-astro-prefetch="tap"
+        >
+          {current}
+        </a>
+      </li>
+			{nextPage && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-content-l u-txt-thn"
+					title={`${nextPage}ページ`}
+					aria-label={`${nextPage}ページ目へ`}
+					href={`${paginationPath}${nextPage}/`}
+					data-astro-prefetch="tap"
+				>
+					{nextPage}
+				</a>
+      </li>
+			)}
+			{twoNext && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-content-l u-txt-thn"
+					title={`${twoNext}ページ`}
+					aria-label={`${twoNext}ページ目へ`}
+					href={`${paginationPath}${twoNext}/`}
+					data-astro-prefetch="tap"
+				>
+					{twoNext}
+				</a>
+      </li>
+			)}
+			{nextPage && (
+      <li>
+        <a
+					class="o-box c-pager-btn c-display-xs"
+					title="次のページ"
+					aria-label="次のページへ"
+					href={`${paginationPath}${nextPage}/`}
+					data-astro-prefetch="tap"
+				>
+          <svg class="o-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+            <path
+              d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+              fill="currentColor"></path>
+          </svg>
+          <span class="sr-only">次のページへ</span>
+        </a>
+      </li>
+			)}
+    </ol>
+  </nav>
+</div>

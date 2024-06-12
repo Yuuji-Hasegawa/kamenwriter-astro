@@ -1,0 +1,8 @@
+node_modules/
+.astro/
+build/
+dist/
+public/
+package-lock.json
+pnpm-lock.yaml
+astro.config.mjs

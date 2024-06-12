@@ -1,0 +1,38 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+export const postsPerPage = 10
+const allNews = await getCollection('news')
+const allNewsSorted = allNews.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+const firstNewsList = allNewsSorted.slice(0, postsPerPage)
+const totalPage = Math.ceil(allNewsSorted.length / postsPerPage)
+import Pagination from '@/components/Pagination.astro'
+---
+
+<Layout title="お知らせ" pageType="archive">
+  <div class="o-center u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">お知らせ</h1>
+    <ul class="o-stack u-insert-stack u-space-m">
+      {
+        firstNewsList.map((news) => (
+          <li class="o-sidebar u-flx-y-b">
+            <time
+              class="c-content-l u-fnt-en u-txt-thn"
+              datetime={new Date(news.data.date)
+                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                .replaceAll('/', '-')}
+            >
+              {new Date(news.data.date)
+                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                .replaceAll('/', '.')}
+            </time>
+            <a class="c-news-link c-content-l u-txt-l" href={`/news/${news.slug}/`} data-astro-prefetch="tap">
+              {news.data.title ? news.data.title : 'お知らせ'}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <Pagination pagePath={Astro.url.pathname} currentPage="1" lastPage={totalPage} />
+</Layout>

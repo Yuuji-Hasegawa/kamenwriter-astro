@@ -1,0 +1,33 @@
+@use 'sass:map';
+@use '../settings' as setting;
+@use '../tools' as tool;
+@use 'sass:math';
+
+.c-cta {
+  display: flex;
+  flex-wrap: wrap;
+  color: color-mix(
+    in oklab,
+    #{map.get(setting.$pickupColor, bg-primary)},
+    #{map.get(setting.$pickupColor, text-primary)} 15%
+  );
+  background-color: map.get(setting.$brandColors, middle);
+
+  &__logo {
+    @include tool.max-screen(setting.$breakm - 1px) {
+      font-size: calc(100vw * math.div(961, 1788));
+    }
+    @include tool.min-screen(setting.$breakm) {
+      flex-grow: 1;
+      font-size: calc((100vw - 768px) * math.div(961, 1788));
+    }
+  }
+
+  &__txt {
+    padding: var(--space-clamp) var(--space-clamp) var(--space-clamp)
+      clamp(setting.f-get-space(m), map.get(setting.$breakpoints, overs), setting.f-get-space(l));
+    @include tool.max-screen(setting.$breakm - 1px) {
+      margin: auto;
+    }
+  }
+}

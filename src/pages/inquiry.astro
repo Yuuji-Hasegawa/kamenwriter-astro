@@ -1,0 +1,217 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import setting from '@/config/setting.json'
+const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
+const homeUrl = protocol + setting.site.host
+---
+
+<Layout title="Inquiry" pageType="page">
+  <div class="o-center c-cnt-wrap u-insert-center u-space-clamp">
+    <h1 class="c-heading u-txt-thn">お問い合わせ</h1>
+    <p class="c-content-l u-mb-l">
+      仮面ライターに興味を持っていただきありがとうございます。<br />
+      ご相談・ご質問は、こちらからお気軽にお問い合わせください。
+    </p>
+    <form class="u-mb-xl" action="#" aria-label="Inquiry Form">
+      <ul class="o-stack u-space-l u-insert-stack u-mb-xl">
+        <li class="c-form-item">
+          <label class="c-input-label u-dsp-ifx u-flx-y-ctr u-mb-s" for="name">
+            <span class="c-content-l u-mr-s">お名前</span>
+            <span class="o-box c-suppl-l c-input-label__required u-px-xs u-my-s" aria-hidden="true">必須</span>
+            <span class="c-placeholder">例）お名前</span>
+          </label>
+          <input
+            class="o-box c-input c-content-l u-pd-s u-w-max"
+            type="text"
+            id="name"
+            placeholder=" "
+            autocomplete="name"
+            autocorrect="off"
+            autocapitalize="none"
+            required=""
+            aria-required="true"
+            autofocus=""
+            aria-describedby="name-error"
+            name="name"
+            value=""
+          />
+        </li>
+        <li class="c-form-item">
+          <label class="c-input-label u-dsp-ifx u-flx-y-ctr u-mb-s" for="email">
+            <span class="c-content-l u-mr-s">メールアドレス</span>
+            <span class="o-box c-suppl-l c-input-label__required u-px-xs u-my-s" aria-hidden="true"> 必須 </span>
+            <span class="c-placeholder u-fnt-en">例）info@examples.com</span>
+          </label>
+          <input
+            class="o-box c-input c-content-l u-pd-s u-w-max u-fnt-en"
+            type="email"
+            id="email"
+            placeholder=" "
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="none"
+            inputmode="email"
+            required=""
+            aria-required="true"
+            aria-describedby="email-error"
+            name="email"
+            value=""
+          />
+        </li>
+        <li class="c-form-item">
+          <label class="c-input-label u-dsp-ifx u-flx-y-ctr u-mb-s" for="message">
+            <span class="c-content-l u-mr-s"> お問い合わせ内容 </span>
+            <span class="c-placeholder"> お気軽にご入力ください </span>
+          </label>
+          <textarea
+            class="o-box c-input c-content-l u-pd-s u-w-max"
+            cols="30"
+            rows="10"
+            id="message"
+            name="message"
+            placeholder=" "></textarea>
+        </li>
+      </ul>
+      <div class="u-dsp-flx u-flx-y-ctr u-mb-l c-cursor">
+        <input
+          class="o-box c-checkbox u-flx-shn u-mr-s"
+          type="checkbox"
+          id="acceptance"
+          required=""
+          aria-required="true"
+          name="acceptance"
+          value="1"
+        />
+        <label for="acceptance" class="c-content-l u-w-max">
+          <a class="c-lnk-txt" target="_blank" rel="noopener noreferrer" href={`${homeUrl}/privacy-policy/`}>
+            プライバシーポリシー
+          </a>
+          に同意する
+        </label>
+      </div>
+      <div style="display:none; visibility:hidden">
+        <label class="c-input-label u-dsp-ifx u-flx-y-ctr u-mb-s" for="subject">
+          <span class="c-content-l u-mr-s">お問い合わせ件名（この欄は空のままにしてください）</span>
+          <span class="c-placeholder">例）xxについて</span>
+        </label>
+        <input
+          class="o-box c-input c-content-l u-pd-s u-w-max"
+          type="text"
+          id="subject"
+          placeholder=" "
+          autocomplete="off"
+          autocorrect="off"
+          tabindex="-1"
+          name="subject"
+          value=""
+        />
+      </div>
+      <button class="o-box c-send-btn c-content-l u-px-m u-py-s" disabled="" aria-disabled="true" type="submit">
+        送信する
+      </button>
+    </form>
+    <ul class="o-stack u-space-xs u-insert-stack">
+      <li class="c-note c-content-m">調査等のため、返信にお時間を頂くことがございます。予めご了承ください。</li>
+      <li class="c-note c-content-m">
+        万が一、一週間経っても返信がない場合は大変お手数ですが、
+        <a class="c-lnk-txt u-fnt-en" href=`mailto:${setting.mail.primary}` target="_blank" rel="noopener noreferrer">
+          info@kamenwriter.com
+        </a>
+        までご連絡ください。
+      </li>
+    </ul>
+  </div>
+</Layout>
+<script>
+  ;(() => {
+    let form: HTMLFormElement | null = document.querySelector('form[aria-label="Inquiry Form"]')
+    let nameInput: HTMLInputElement | null = form?.querySelector('#name')
+    let emailInput: HTMLInputElement | null = form?.querySelector('#email')
+    let acceptanceCheckbox: HTMLInputElement | null = form?.querySelector('#acceptance')
+    let submitButton: HTMLButtonElement | null = form?.querySelector('button[type="submit"]')
+    let subject: HTMLInputElement | null = form?.querySelector('#subject')
+
+    const validateName = (): boolean => {
+      const nameValue: string = nameInput?.value.trim() || ''
+      if (nameValue === '') {
+        showError(nameInput, '必須項目です。', 'name-error')
+        return false
+      }
+      hideError('name-error')
+      return true
+    }
+
+    const validateEmail = (): boolean => {
+      const emailValue: string = emailInput?.value.trim() || ''
+      const emailPattern: RegExp =
+        /^[a-zA-Z0-9_\+\-]+(\.[a-zA-Z0-9_\+\-]+)*@([a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/
+      if (emailValue === '') {
+        showError(emailInput, '必須項目です。', 'email-error')
+        return false
+      } else if (!emailPattern.test(emailValue)) {
+        showError(emailInput, 'メールアドレスの形式が正しくありません。', 'email-error')
+        return false
+      }
+      hideError('email-error')
+      return true
+    }
+
+    const handleSubjectInput = (): void => {
+      if (subject?.value.trim() !== '') {
+        acceptanceCheckbox?.setAttribute('disabled', 'true')
+        acceptanceCheckbox.checked = false
+        submitButton?.setAttribute('disabled', 'true')
+        submitButton?.setAttribute('aria-disabled', 'true')
+      } else {
+        acceptanceCheckbox?.removeAttribute('disabled')
+        if (acceptanceCheckbox?.checked) {
+          submitButton?.removeAttribute('disabled')
+          submitButton?.removeAttribute('aria-disabled')
+        }
+      }
+    }
+
+    const showError = (input: HTMLInputElement | null, message: string, errorId: string): void => {
+      let errorMessage: HTMLElement | null = document.getElementById(errorId)
+      if (!errorMessage) {
+        errorMessage = document.createElement('span')
+        errorMessage.classList.add('c-form-error', 'c-suppl-l')
+        errorMessage.id = errorId
+        errorMessage.setAttribute('aria-live', 'polite')
+        input?.parentNode?.appendChild(errorMessage)
+      }
+      errorMessage.textContent = message
+      errorMessage.style.display = 'block'
+      const placeholder: HTMLElement | null = input?.parentNode?.querySelector('.c-placeholder')
+      if (placeholder) {
+        placeholder.style.color = 'var(--accent-middle)'
+      }
+    }
+
+    const hideError = (errorId: string): void => {
+      const errorMessage: HTMLElement | null = document.getElementById(errorId)
+      if (errorMessage) {
+        errorMessage.remove()
+      }
+      const input: HTMLInputElement | null = document.querySelector(`#${errorId.replace('-error', '')}`)
+      const placeholder: HTMLElement | null = input?.parentNode?.querySelector('.c-placeholder')
+      if (placeholder) {
+        placeholder.style.color = '' // 元の色に戻す
+      }
+    }
+
+    acceptanceCheckbox?.addEventListener('change', () => {
+      if (acceptanceCheckbox.checked) {
+        submitButton?.removeAttribute('disabled')
+        submitButton?.removeAttribute('aria-disabled')
+      } else {
+        submitButton?.setAttribute('disabled', 'true')
+        submitButton?.setAttribute('aria-disabled', 'true')
+      }
+    })
+
+    nameInput?.addEventListener('blur', validateName)
+    emailInput?.addEventListener('blur', validateEmail)
+    subject?.addEventListener('blur', handleSubjectInput)
+  })()
+</script>

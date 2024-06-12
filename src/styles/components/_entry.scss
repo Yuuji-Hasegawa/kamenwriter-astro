@@ -1,0 +1,76 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.c-cnt-wrap {
+  max-width: setting.$readableLength;
+}
+
+.c-summary,
+.c-toc {
+  color: map.get(setting.$pickupColor, text-secondary);
+  background: map.get(setting.$pickupColor, bg-secondary);
+}
+
+.c-toc {
+  border-color: transparent;
+  transition: all 0.3s ease-in-out;
+
+  --box-border-w: 0;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
+    background-color: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-primary)},
+      #{map.get(setting.$pickupColor, text-primary)} 15%
+    );
+  }
+
+  &__summary {
+    position: relative;
+
+    .o-icon:last-of-type {
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      transition: all 0.3s ease-in-out;
+      transform: translateY(-50%);
+
+      .c-toc[open] & {
+        transform: translateY(-50%) rotate(180deg);
+      }
+    }
+  }
+
+  &[aria-hidden='true'] {
+    content-visibility: hidden;
+    contain: content;
+    @supports not (content-visibility: hidden) {
+      display: none;
+    }
+  }
+}
+
+.c-entry {
+  p {
+    & + * {
+      margin-top: setting.f-get-space(l);
+    }
+  }
+}
+
+.c-bio-pict {
+  flex-basis: 100px;
+}
+
+.c-bio-txt {
+  flex-basis: map.get(setting.$breakpoints, unders);
+  flex-grow: 1;
+
+  & > :not(div.c-content-m) {
+    width: min(map.get(setting.$breakpoints, overs), 100%);
+    min-width: max-content;
+  }
+}

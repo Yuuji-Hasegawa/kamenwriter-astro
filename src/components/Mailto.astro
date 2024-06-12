@@ -1,0 +1,14 @@
+---
+import type { string } from 'astro/zod'
+
+interface Props {
+  address: string
+  insertClass: string
+}
+
+const { address, insertClass } = Astro.props
+---
+
+<a class={insertClass} href=`mailto:${ address }` target="_blank" rel="noopener noreferrer">
+  {address}
+</a>

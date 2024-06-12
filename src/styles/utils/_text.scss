@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use '../settings' as setting;
+
+.u-lnh-n {
+  line-height: map.get(setting.$lineHeight, none);
+}
+
+.u-txt-ctr {
+  text-align: center;
+}
+
+.u-txt-l {
+  text-align: left;
+}
+
+.u-txt-r {
+  text-align: right;
+}
+
+.u-fnt-en {
+  font-family: setting.$font-family-en;
+}
+
+.u-txt-slnt {
+  font-variation-settings: 'slnt' -10;
+}
+
+@each $key, $name in setting.$fontWeight {
+  $is_target: if($key == x or $key == l, true, false);
+  @if $is_target {
+    .u-fnt-w#{$key} {
+      font-weight: map.get(setting.$fontWeight, $key);
+    }
+  }
+}
+
+.u-txt-trim {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--trim-line, 1);
+
+  &.\:twoline {
+    --trim-line: 2;
+  }
+}
+
+.u-txt-sec {
+  color: map.get(setting.$pickupColor, text-secondary);
+}
+
+.u-txt-thn {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,79 @@
+@use 'sass:map';
+@use 'sass:math';
+
+$fontRem: 1rem;
+$fontEm: 1em;
+$numerator: 8;
+$fontScale: (
+  6xs: math.div($numerator, $numerator + 7),
+  5xs: math.div($numerator, $numerator + 6),
+  4xs: math.div($numerator, $numerator + 5),
+  3xs: math.div($numerator, $numerator + 4),
+  2xs: math.div($numerator, $numerator + 3),
+  xs: math.div($numerator, $numerator + 2),
+  s: math.div($numerator, $numerator + 1),
+  m: math.div($numerator, $numerator),
+  l: math.div($numerator, $numerator - 1),
+  xl: math.div($numerator, $numerator - 2),
+  2xl: math.div($numerator, $numerator - 3),
+  3xl: math.div($numerator, $numerator - 4),
+  4xl: math.div($numerator, $numerator - 5),
+  5xl: math.div($numerator, $numerator - 6),
+  6xl: math.div($numerator, $numerator - 7),
+) !default;
+
+@function f-font-size($scale, $unit: rem) {
+  $fontSize: map-get($fontScale, $scale);
+  @if $unit == em {
+    @return $fontEm * $fontSize;
+  } @else {
+    @return $fontRem * $fontSize;
+  }
+}
+
+$fontWeight: (
+  t: 100,
+  x: 200,
+  l: 300,
+  r: 400,
+  m: 500,
+  b: 700,
+) !default;
+
+$lineHeightBase: 1.5;
+$lineHeight: (
+  none: 1,
+  s: $lineHeightBase * math.div($numerator, $numerator + 1),
+  m: $lineHeightBase * math.div($numerator, $numerator),
+  l: $lineHeightBase * math.div($numerator, $numerator - 1),
+) !default;
+
+$letterSpacing: (
+  s: 0.02em,
+  m: 0.04em,
+) !default;
+
+$font-family:
+  -apple-system,
+  blinkmacsystemfont,
+  'Segoe UI',
+  roboto,
+  'Hiragino Sans',
+  'Hiragino Kaku Gothic ProN',
+  BIZ UDPGothic,
+  Meiryo,
+  sans-serif;
+
+$font-family-en: 'Roboto Flex', sans-serif;
+
+/*! Roboto Flex is licensed under the SIL Open Font License, Version 1.1.
+ * http://scripts.sil.org/OFL
+ * I've converted my Roboto Flex font(https://fonts.google.com/specimen/Roboto+Flex) from ttf to woff2. */
+
+@font-face {
+  font-family: 'Roboto Flex';
+  font-weight: 100 700;
+  font-display: optional;
+  src: url('/fonts/RobotoFlex-VariableFont.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+02BB-02BC, U+2000-206F, U+20AC, U+2212, U+2215, U+FEFF;
+}

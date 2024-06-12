@@ -1,0 +1,138 @@
+@use 'sass:map';
+@use '../settings' as setting;
+@use '../tools' as tool;
+
+.c-form-item {
+  position: relative;
+}
+
+.c-input,
+.c-checkbox {
+  background: transparent;
+  border-radius: map.get(setting.$borderRadius, s);
+}
+
+.c-input {
+  resize: none;
+  border-color: map.get(setting.$pickupColor, text-tertiary);
+
+  &:not(:placeholder-shown):valid {
+    border-color: map.get(setting.$brandColors, tint);
+  }
+
+  &:not(:placeholder-shown):invalid {
+    border-color: var(--accent-middle);
+
+    &:focus {
+      outline-color: var(--accent-middle);
+    }
+  }
+
+  &:focus {
+    outline: 1px solid map.get(setting.$brandColors, tint);
+  }
+
+  .c-form-item:has(.c-form-error) & {
+    color: var(--accent-middle);
+    border-color: var(--accent-middle);
+  }
+}
+
+.c-input-label {
+  position: relative;
+}
+
+.c-checkbox {
+  position: relative;
+  width: setting.f-font-size(l, em);
+  height: setting.f-font-size(l, em);
+  border-color: currentcolor;
+  border-radius: map.get(setting.$borderRadius, s);
+
+  &:checked {
+    background: map.get(setting.$brandColors, middle);
+    border-color: map.get(setting.$pickupColor, colored-primary);
+
+    &::after {
+      position: absolute;
+      top: calc(50% - 2px);
+      left: 50%;
+      width: setting.f-font-size(2xs, em);
+      height: calc(setting.f-font-size(2xs, em) / 2);
+      content: '';
+      border-color: map.get(setting.$pickupColor, colored-primary);
+      border-style: solid;
+      border-width: 0 0 2px 2px;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
+}
+
+.c-form-error {
+  position: absolute;
+  top: calc(100% + setting.f-get-space(xs));
+  right: 0;
+  color: var(--accent-middle);
+}
+
+.c-placeholder {
+  position: absolute;
+  top: calc(100% + setting.f-get-space(m));
+  left: setting.f-get-space(s);
+  width: max-content;
+  padding: 0;
+  font-weight: map.get(setting.$fontWeight, x);
+  line-height: map.get(setting.$lineHeight, l);
+  color: map.get(setting.$pickupColor, text-tertiary);
+  letter-spacing: map.get(setting.$letterSpacing, m);
+  background: transparent;
+  transition: all 0.3s ease-in-out 0s;
+
+  .c-form-item:focus-within &,
+  .c-form-item:has(.c-input:not(:placeholder-shown)) & {
+    z-index: 2;
+    padding-right: setting.f-get-space(xs);
+    padding-left: setting.f-get-space(xs);
+    font-weight: map.get(setting.$fontWeight, l);
+    color: map.get(setting.$brandColors, tint);
+    background: map.get(setting.$pickupColor, bg-primary);
+    transform: translate(-7px, -19px) scale(0.8);
+  }
+
+  .c-form-item:has(.c-input:not(:placeholder-shown):invalid) &,
+  .c-form-item:has(.c-form-error) & {
+    color: var(--accent-middle);
+  }
+}
+
+.c-message-box {
+  height: 0;
+  padding: 0 var(--space-m);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+
+  &.\:is-view {
+    height: auto;
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+    margin-top: setting.f-get-space(l);
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.c-cursor {
+  cursor: pointer;
+}
+
+.c-share-bx {
+  position: relative;
+
+  .o-icon {
+    position: absolute;
+    top: 50%;
+    left: 1em;
+    transform: translateY(-50%);
+  }
+}
