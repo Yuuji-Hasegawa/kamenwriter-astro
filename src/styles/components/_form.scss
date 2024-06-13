@@ -120,6 +120,26 @@
     visibility: visible;
     opacity: 1;
   }
+
+	&.\:success {
+		border-color: map.get(setting.$brandColors, middle);
+	}
+
+	&.\:error {
+		border-color: var(--accent-middle);
+	}
+
+	&.\:sending {
+		animation: borderAnimation 5s infinite;
+	}
+}
+
+@keyframes borderAnimation {
+  0% { border-color: map.get(setting.$brandColors, middle); }
+  25% { border-color: map.get(setting.$brandColors, tint); }
+  50% { border-color: map.get(setting.$brandColors, shade); }
+  75% { border-color: map.get(setting.$brandColors, tint); }
+  100% { border-color: map.get(setting.$brandColors, middle); }
 }
 
 .c-cursor {

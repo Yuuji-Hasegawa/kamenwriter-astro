@@ -3,6 +3,8 @@ import Layout from '@/layouts/Layout.astro'
 import setting from '@/config/setting.json'
 const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
 const homeUrl = protocol + setting.site.host
+const recaptchaKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY
+const gatewayApi = import.meta.env.PUBLIC_GATEWAY_URL
 ---
 
 <Layout title="Inquiry" pageType="page">
@@ -12,7 +14,7 @@ const homeUrl = protocol + setting.site.host
       仮面ライターに興味を持っていただきありがとうございます。<br />
       ご相談・ご質問は、こちらからお気軽にお問い合わせください。
     </p>
-    <form class="u-mb-xl" action="#" aria-label="Inquiry Form">
+    <form class="u-mb-xl" method="post" aria-label="Inquiry Form" id="mailForm">
       <ul class="o-stack u-space-l u-insert-stack u-mb-xl">
         <li class="c-form-item">
           <label class="c-input-label u-dsp-ifx u-flx-y-ctr u-mb-s" for="name">
@@ -109,6 +111,7 @@ const homeUrl = protocol + setting.site.host
       <button class="o-box c-send-btn c-content-l u-px-m u-py-s" disabled="" aria-disabled="true" type="submit">
         送信する
       </button>
+      <div id="formMessage" class="o-box c-message-box u-mt-l"></div>
     </form>
     <ul class="o-stack u-space-xs u-insert-stack">
       <li class="c-note c-content-m">調査等のため、返信にお時間を頂くことがございます。予めご了承ください。</li>
@@ -122,17 +125,20 @@ const homeUrl = protocol + setting.site.host
     </ul>
   </div>
 </Layout>
-<script>
+<script is:inline src={`https://www.google.com/recaptcha/api.js?render=${recaptchaKey}&hl=ja`}></script>
+<script is:inline define:vars={{ recaptchaKey, gatewayApi }}>
   ;(() => {
-    let form: HTMLFormElement | null = document.querySelector('form[aria-label="Inquiry Form"]')
-    let nameInput: HTMLInputElement | null = form?.querySelector('#name')
-    let emailInput: HTMLInputElement | null = form?.querySelector('#email')
-    let acceptanceCheckbox: HTMLInputElement | null = form?.querySelector('#acceptance')
-    let submitButton: HTMLButtonElement | null = form?.querySelector('button[type="submit"]')
-    let subject: HTMLInputElement | null = form?.querySelector('#subject')
+    let form = document.getElementById('mailForm')
+    let nameInput = form.querySelector('#name')
+    let emailInput = form.querySelector('#email')
+    let messageInput = form.querySelector('#message')
+    let acceptanceCheckbox = form.querySelector('#acceptance')
+    let submitButton = form.querySelector('button[type="submit"]')
+    let subject = form.querySelector('#subject')
+    let formMessage = document.getElementById('formMessage')
 
-    const validateName = (): boolean => {
-      const nameValue: string = nameInput?.value.trim() || ''
+    const validateName = () => {
+      const nameValue = nameInput.value.trim() || ''
       if (nameValue === '') {
         showError(nameInput, '必須項目です。', 'name-error')
         return false
@@ -141,9 +147,9 @@ const homeUrl = protocol + setting.site.host
       return true
     }
 
-    const validateEmail = (): boolean => {
-      const emailValue: string = emailInput?.value.trim() || ''
-      const emailPattern: RegExp =
+    const validateEmail = () => {
+      const emailValue = emailInput.value.trim() || ''
+      const emailPattern =
         /^[a-zA-Z0-9_\+\-]+(\.[a-zA-Z0-9_\+\-]+)*@([a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/
       if (emailValue === '') {
         showError(emailInput, '必須項目です。', 'email-error')
@@ -156,62 +162,132 @@ const homeUrl = protocol + setting.site.host
       return true
     }
 
-    const handleSubjectInput = (): void => {
-      if (subject?.value.trim() !== '') {
-        acceptanceCheckbox?.setAttribute('disabled', 'true')
+    const handleSubjectInput = () => {
+      if (subject.value.trim() !== '') {
+        acceptanceCheckbox.setAttribute('disabled', 'true')
         acceptanceCheckbox.checked = false
-        submitButton?.setAttribute('disabled', 'true')
-        submitButton?.setAttribute('aria-disabled', 'true')
+        submitButton.setAttribute('disabled', 'true')
+        submitButton.setAttribute('aria-disabled', 'true')
       } else {
-        acceptanceCheckbox?.removeAttribute('disabled')
-        if (acceptanceCheckbox?.checked) {
-          submitButton?.removeAttribute('disabled')
-          submitButton?.removeAttribute('aria-disabled')
+        acceptanceCheckbox.removeAttribute('disabled')
+        if (acceptanceCheckbox.checked) {
+          submitButton.removeAttribute('disabled')
+          submitButton.removeAttribute('aria-disabled')
         }
       }
     }
 
-    const showError = (input: HTMLInputElement | null, message: string, errorId: string): void => {
-      let errorMessage: HTMLElement | null = document.getElementById(errorId)
+    const showError = (input, message, errorId) => {
+      let errorMessage = document.getElementById(errorId)
       if (!errorMessage) {
         errorMessage = document.createElement('span')
         errorMessage.classList.add('c-form-error', 'c-suppl-l')
         errorMessage.id = errorId
         errorMessage.setAttribute('aria-live', 'polite')
-        input?.parentNode?.appendChild(errorMessage)
+        input.parentNode.appendChild(errorMessage)
       }
       errorMessage.textContent = message
       errorMessage.style.display = 'block'
-      const placeholder: HTMLElement | null = input?.parentNode?.querySelector('.c-placeholder')
+      const placeholder = input?.parentNode?.querySelector('.c-placeholder')
       if (placeholder) {
         placeholder.style.color = 'var(--accent-middle)'
       }
     }
 
-    const hideError = (errorId: string): void => {
-      const errorMessage: HTMLElement | null = document.getElementById(errorId)
+    const hideError = (errorId) => {
+      const errorMessage = document.getElementById(errorId)
       if (errorMessage) {
         errorMessage.remove()
       }
-      const input: HTMLInputElement | null = document.querySelector(`#${errorId.replace('-error', '')}`)
-      const placeholder: HTMLElement | null = input?.parentNode?.querySelector('.c-placeholder')
+      const input = document.querySelector(`#${errorId.replace('-error', '')}`)
+      const placeholder = input?.parentNode?.querySelector('.c-placeholder')
       if (placeholder) {
-        placeholder.style.color = '' // 元の色に戻す
+        placeholder.style.color = ''
       }
     }
 
-    acceptanceCheckbox?.addEventListener('change', () => {
+    const disabledForm = () => {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+    }
+
+    const enableForm = () => {
+      submitButton.removeAttribute('disabled')
+      submitButton.removeAttribute('aria-disabled')
+    }
+
+    const clearForm = () => {
+      form.reset()
+      formMessage.textContent = ''
+      disabledForm()
+    }
+
+    const showMessage = (messageTxt, messageType) => {
+      formMessage.textContent = messageTxt
+      formMessage.classList.add(':is-view')
+      formMessage.setAttribute('aria-live', 'polite')
+
+      const messageTypes = [':success', ':error', ':sending']
+      messageTypes.forEach((type) => {
+        if (formMessage.classList.contains(type)) {
+          formMessage.classList.remove(type)
+        }
+      })
+
+      if (messageType) {
+        formMessage.classList.add(messageType)
+      }
+    }
+
+    acceptanceCheckbox.addEventListener('change', () => {
       if (acceptanceCheckbox.checked) {
-        submitButton?.removeAttribute('disabled')
-        submitButton?.removeAttribute('aria-disabled')
+        enableForm()
       } else {
-        submitButton?.setAttribute('disabled', 'true')
-        submitButton?.setAttribute('aria-disabled', 'true')
+        disabledForm()
       }
     })
 
-    nameInput?.addEventListener('blur', validateName)
-    emailInput?.addEventListener('blur', validateEmail)
-    subject?.addEventListener('blur', handleSubjectInput)
+    nameInput.addEventListener('blur', validateName)
+    emailInput.addEventListener('blur', validateEmail)
+    subject.addEventListener('blur', handleSubjectInput)
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      if (!validateName() || !validateEmail()) {
+        showMessage('入力内容に不備があります。入力内容を確認して、もう一度送信してください。', ':error')
+        return
+      }
+      showMessage('送信中......', ':sending')
+      disabledForm()
+      grecaptcha.ready(() => {
+        grecaptcha.execute(recaptchaKey, { action: 'submit' }).then(async (token) => {
+          const payload = {
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            message: messageInput.value.trim(),
+            googleReCaptchaToken: token,
+          }
+          try {
+            const response = await fetch(gatewayApi, {
+              method: 'POST',
+              body: JSON.stringify(payload),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            if (response.ok) {
+              clearForm()
+              showMessage('送信が完了しました。', ':success')
+            } else {
+              showMessage('送信に失敗しました。再度お試しください。', ':error')
+            }
+          } catch (error) {
+            showMessage('送信に失敗しました。再度お試しください。', ':error')
+          } finally {
+            enableForm()
+          }
+        })
+      })
+    })
   })()
 </script>
