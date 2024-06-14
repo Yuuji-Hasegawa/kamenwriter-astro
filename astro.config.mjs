@@ -5,11 +5,15 @@ import { remarkReadingTime } from './src/utils/reading-time.mjs';
 import sitemap from "@astrojs/sitemap";
 import compress from "astro-compress";
 import partytown from "@astrojs/partytown";
+import remarkExternalLinks from 'remark-external-links';
 
 // https://astro.build/config
 export default defineConfig({
-  markdown: {
-    remarkPlugins: [remarkReadingTime]
+	markdown: {
+		remarkPlugins: [
+			remarkReadingTime,
+			[remarkExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
+		]
   },
   integrations: [react(), mdx(), compress({
     css: true,

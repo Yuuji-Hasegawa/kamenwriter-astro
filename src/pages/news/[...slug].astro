@@ -18,11 +18,11 @@ const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
 const url = protocol + setting.site.host + decodeURI(Astro.url.pathname)
 ---
 <Layout
-	title={entry.data.title ? entry.data.title : 'お知らせ'}
-	pageType="single"
+	title = {entry.data.title ? entry.data.title : 'お知らせ'}
+	pageType = "single"
 	date = {entry.data.date}
   update = {entry.data.update}
-	description = {entry.data.summary || entry.body.slice(0, 160).replace(/\n/g, "").replace(/\s+/g, " ")},
+	description = {entry.data.summary ? entry.data.summary : entry.body.slice(0, 160).replace(/\n/g, "").replace(/\s+/g, " ")},
   keywords = {entry.data.keywords}
 	>
   <div class="o-center c-cnt-wrap u-insert-center u-space-clamp">
