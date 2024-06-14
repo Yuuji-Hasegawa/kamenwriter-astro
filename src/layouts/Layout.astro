@@ -50,7 +50,7 @@ switch (pageType) {
     break
 }
 
-const ogpURL = new URL(imgUrl, Astro.site).href || new URL('/images/ogp.png', Astro.site).href
+const ogpURL = imgUrl ? new URL(imgUrl, Astro.site).href : new URL('/images/ogp.png', Astro.site).href
 const ogpImgw = imgW || 1200
 const ogpImgh = imgH || 630
 const ogpTw = imgSq

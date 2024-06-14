@@ -16,7 +16,7 @@ export async function GET(context) {
     description: `Latest updates from ${setting.site.title}`,
     site: context.site,
     lastBuildDate: allPosts.length > 0 ? new Date(allPosts[0].data.date) : new Date(),
-    language: ja,
+    language: 'ja',
     items: allPosts.map((post) => ({
       title: post.data.title,
       link:

@@ -49,8 +49,7 @@ function shuffleArray(array: any) {
 	return array;
 }
 
-const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4)
-const imgPath = entry.data.image.src.match(/\/public\/.+?\.(png|jpg|jpeg|gif)/)[0] || '';
+const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4);
 
 ---
 <Layout
@@ -59,8 +58,8 @@ const imgPath = entry.data.image.src.match(/\/public\/.+?\.(png|jpg|jpeg|gif)/)[
 	catLabel={entry.data.category.label || '未分類'}
 	description = {entry.data.summary || entry.body.slice(0, 160).replace(/\n/g, "").replace(/\s+/g, " ")},
   keywords = {entry.data.keywords},
-	imgUrl = {imgPath.replace(/^\/public/, '') || ''},
-	imgSq = {entry.data.imageSq || ''}
+	imgUrl = {entry.data.ogp},
+	imgSq = {entry.data.ogpSq}
   imgW = {entry.data.image.width / 2},
   imgH = {entry.data.image.height / 2},
   date = {entry.data.date},

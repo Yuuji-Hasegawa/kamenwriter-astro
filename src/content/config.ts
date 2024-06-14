@@ -36,7 +36,8 @@ const stories = defineCollection({
         )
         .optional(),
       image: image().optional(),
-      imageSq: z.string().optional(),
+      ogp: z.string().optional(),
+      ogpSq: z.string().optional(),
       minutesRead: z.string().optional(),
     }),
 })
