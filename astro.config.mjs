@@ -9,25 +9,33 @@ import remarkExternalLinks from 'remark-external-links';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://kamenwriter.com',
 	markdown: {
 		remarkPlugins: [
 			remarkReadingTime,
 			[remarkExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
 		]
   },
-  integrations: [react(), mdx(), compress({
+	integrations: [
+		react(),
+		mdx(),
+		compress({
     css: true,
     html: true,
     img: true,
     js: true,
     svg: true
-  }), sitemap(), partytown({config: {
+		}),
+		sitemap(),
+		partytown({
+			config: {
         forward: ['dataLayer.push'],
-      }})],
+			}
+		})
+	],
   trailingSlash: "always",
   build: {
     inlineStylesheets: 'always'
   },
   prefetch: true,
-  site: 'https://kamenwriter.com'
 });
