@@ -12,6 +12,10 @@
     aspect-ratio: #{map.get(setting.$aspect, square)};
   }
 
+	&.\:v {
+		aspect-ratio: #{map.get(setting.$aspect, portrait)};
+	}
+
   &.\:r {
     --frame-round: 50%;
   }

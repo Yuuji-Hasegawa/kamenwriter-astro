@@ -74,3 +74,14 @@
     min-width: max-content;
   }
 }
+
+.c-media-narrow {
+	flex-basis: 35%;
+	flex-grow: 1;
+}
+
+.c-media-wide {
+	flex-basis: 0;
+  flex-grow: 999;
+	min-width: min(map.get(setting.$breakpoints, underm), 100%);
+}

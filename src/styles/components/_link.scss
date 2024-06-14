@@ -28,7 +28,8 @@
 .c-more-btn,
 .c-cta__btn,
 .c-send-btn,
-.c-to-home-btn {
+.c-to-home-btn,
+.c-about-btn {
   max-width: max-content;
   border-color: transparent;
   border-radius: map.get(setting.$borderRadius, s);
@@ -72,6 +73,22 @@
   outline-color: map.get(setting.$pickupColor, text-tertiary);
 }
 
+.c-about-btn {
+	color: map.get(setting.$pickupColor, text-secondary);
+	background-color: map.get(setting.$pickupColor, bg-secondary);
+
+	&:hover,
+  &:focus,
+  &:active {
+		color: map.get(setting.$pickupColor, colored-primary);
+    background: color-mix(
+      in oklab,
+      #{map.get(setting.$pickupColor, bg-secondary)},
+      #{map.get(setting.$pickupColor, text-secondary)} 15%
+    );
+	}
+}
+
 .c-card-link {
   position: relative;
   min-height: 100%;
@@ -103,7 +120,8 @@
       );
     }
 
-    & > .o-frame > * {
+    & > .o-frame > *,
+		& > .c-media-narrow > .o-frame > * {
       filter: blur(calc(setting.f-get-space(s) * 0.15)) grayscale(100%);
       transform: scale(1.15);
     }
