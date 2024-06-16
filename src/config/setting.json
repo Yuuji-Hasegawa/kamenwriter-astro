@@ -1,6 +1,6 @@
 {
   "site": {
-    "host": "kamenwriter.com",
+    "host": "www.kamenwriter.com",
     "title": "仮面ライター",
     "description": "ヘンな大阪のWeb屋さん",
     "keywords": ["仮面ライター", "カメンライター"],
@@ -22,7 +22,7 @@
     "zip": "567-0005",
     "address": "大阪府茨木市五日市2",
     "birth": "2013年04月26日",
-    "url": "https://kamenwriter.com",
+    "url": "https://www.kamenwriter.com",
     "service": [
       "Webサイト制作",
       "Web/SNS活用サポート",
@@ -37,7 +37,7 @@
   },
   "terms": {
     "company": "仮面ライター",
-    "domain": "kamenwriter.com",
+    "domain": "www.kamenwriter.com",
     "name": "仮面ライター",
     "payterm": "12ヶ月間",
     "court": "大阪地方裁判所",

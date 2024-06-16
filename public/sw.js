@@ -1,6 +1,6 @@
 const CACHE_NAME = 'kamenwriter-2024-06-30';
-const OFFLINE_URL = 'https://kamenwriter.com/';
-const urlsToCache = ['https://kamenwriter.com/'];
+const OFFLINE_URL = 'https://www.kamenwriter.com/';
+const urlsToCache = ['https://www.kamenwriter.com/'];
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(

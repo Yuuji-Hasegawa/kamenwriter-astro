@@ -9,7 +9,7 @@ import remarkExternalLinks from 'remark-external-links';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://kamenwriter.com',
+	site: 'https://www.kamenwriter.com',
 	markdown: {
 		remarkPlugins: [
 			remarkReadingTime,

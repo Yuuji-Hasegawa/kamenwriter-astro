@@ -120,7 +120,7 @@ const ogpTwH = imgSq ? ogpTwW : imgH ? imgH : 1200
       type="font/woff2"
       crossorigin="anonymous"
     />
-		<link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <Header />
@@ -132,7 +132,7 @@ const ogpTwH = imgSq ? ogpTwW : imgH ? imgH : 1200
     <script is:inline>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
-          navigator.serviceWorker.register('https://kamenwriter.com/sw.js').then(
+          navigator.serviceWorker.register('https://www.kamenwriter.com/sw.js').then(
             function (registration) {
               console.log('My ServiceWorker registed.', registration.scope)
             },
