@@ -203,12 +203,19 @@
   ;(() => {
     const firstViews = () => {
       const images = document.querySelectorAll('img')
+      const head = document.querySelector('head')
       const windowHeight = window.innerHeight
       images.forEach((image) => {
         const rect = image.getBoundingClientRect()
         if (rect.top < windowHeight) {
           image.removeAttribute('loading')
+          image.removeAttribute('decoding')
           image.setAttribute('fetchpriority', 'high')
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.href = image.src
+          link.as = 'image'
+          head.appendChild(link)
         }
       })
     }
