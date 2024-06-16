@@ -14,12 +14,8 @@
   &:hover,
   &:focus,
   &:active {
-    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
-    background-color: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-primary)},
-      #{map.get(setting.$pickupColor, text-primary)} 15%
-    );
+		color: setting.f-mix(map.get(setting.$pickupColor, text-primary), transparent, 0.15);
+		background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
   }
 }
 
@@ -29,12 +25,8 @@
   border-color: transparent;
 
   &[aria-current='page'] {
-    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
-    background-color: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-primary)},
-      #{map.get(setting.$pickupColor, text-primary)} 15%
-    );
+		color: setting.f-mix(map.get(setting.$pickupColor, text-primary), transparent, 0.15);
+		background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
   }
 }
 
@@ -49,27 +41,6 @@
   transition: all 0.3s ease-in-out;
   content-visibility: visible;
   contain: content;
-
-  &::before {
-    position: fixed;
-    inset: 0;
-    z-index: 998;
-    display: none;
-    pointer-events: none;
-    cursor: pointer;
-    visibility: hidden;
-    content: '';
-    background: rgba(map.get(setting.$pickupColor, bg-primary), 0.5);
-    opacity: 0;
-    transition: all 0.3s ease-in-out;
-
-    .c-gnav-wrap[open] & {
-      display: block;
-      pointer-events: auto;
-      visibility: visible;
-      opacity: 1;
-    }
-  }
 
   &__inner {
     position: relative;
@@ -157,11 +128,7 @@
   &:focus,
   &:active {
     color: map.get(setting.$brandColors, middle);
-    background: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-primary)},
-      #{map.get(setting.$pickupColor, text-primary)} 15%
-    );
+		background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
   }
 }
 

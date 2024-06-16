@@ -131,11 +131,7 @@
 .c-cat-label,
 .c-input-label__required {
   max-width: max-content;
-  color: color-mix(
-    in oklab,
-    #{map.get(setting.$pickupColor, bg-primary)},
-    #{map.get(setting.$pickupColor, text-primary)} 15%
-  );
+	color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
   background-color: map.get(setting.$brandColors, middle);
   border-color: transparent;
   border-radius: map.get(setting.$borderRadius, s);

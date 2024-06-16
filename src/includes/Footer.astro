@@ -201,8 +201,19 @@
 </footer>
 <script>
   ;(() => {
-    const setContainIntrinsicSize = (): void => {
-      const elements = document.querySelectorAll<HTMLElement>('.js-cnt-v-auto, .c-toc')
+    const firstViews = () => {
+      const images = document.querySelectorAll('img')
+      const windowHeight = window.innerHeight
+      images.forEach((image) => {
+        const rect = image.getBoundingClientRect()
+        if (rect.top < windowHeight) {
+          image.removeAttribute('loading')
+          image.setAttribute('fetchpriority', 'high')
+        }
+      })
+    }
+    const setContainIntrinsicSize = () => {
+      const elements = document.querySelectorAll('.js-cnt-v-auto, .c-toc')
       elements.forEach((element: HTMLElement) => {
         const rect = element.getBoundingClientRect()
         const width = `${rect.width}px`
@@ -221,8 +232,16 @@
         timeout = setTimeout(() => func(...args), wait)
       }
     }
-
-    window.addEventListener('load', setContainIntrinsicSize)
-    window.addEventListener('resize', debounce(setContainIntrinsicSize, 100))
+    window.addEventListener('load', () => {
+      firstViews()
+      setContainIntrinsicSize()
+    })
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        firstViews()
+        setContainIntrinsicSize()
+      }, 100),
+    )
   })()
 </script>

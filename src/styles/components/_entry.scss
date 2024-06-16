@@ -20,12 +20,8 @@
   &:hover,
   &:focus,
   &:active {
-    color: color-mix(in oklab, #{map.get(setting.$pickupColor, text-primary)}, transparent 15%);
-    background-color: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-primary)},
-      #{map.get(setting.$pickupColor, text-primary)} 15%
-    );
+    color: setting.f-mix(map.get(setting.$pickupColor, text-primary), transparent, 0.15);
+		background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
   }
 
   &__summary {

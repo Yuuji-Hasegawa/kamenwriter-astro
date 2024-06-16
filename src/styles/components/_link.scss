@@ -43,11 +43,7 @@
   &:focus,
   &:active {
     color: map.get(setting.$brandColors, middle);
-    background: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-primary)},
-      #{map.get(setting.$pickupColor, text-primary)} 15%
-    );
+    background: setting.f-mix(map.get(setting.$pickupColor, bg-primary),map.get(setting.$pickupColor, text-primary), 0.15);
   }
 }
 
@@ -81,11 +77,7 @@
   &:focus,
   &:active {
 		color: map.get(setting.$pickupColor, colored-primary);
-    background: color-mix(
-      in oklab,
-      #{map.get(setting.$pickupColor, bg-secondary)},
-      #{map.get(setting.$pickupColor, text-secondary)} 15%
-    );
+		background: setting.f-mix(map.get(setting.$pickupColor, bg-secondary), map.get(setting.$pickupColor, text-secondary), 0.15);
 	}
 }
 
@@ -113,11 +105,7 @@
   &:focus,
   &:active {
     &::after {
-      background-color: color-mix(
-        in oklab,
-        #{map.get(setting.$pickupColor, bg-primary)},
-        #{map.get(setting.$pickupColor, text-primary)} 15%
-      );
+			background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
     }
 
     & > .o-frame > *,
