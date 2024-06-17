@@ -9,6 +9,27 @@ import remarkExternalLinks from 'remark-external-links';
 
 // https://astro.build/config
 export default defineConfig({
+	vite: {
+    build: {
+      rollupOptions: {
+				output: {
+					assetFileNames: (assetInfo) => {
+						let extType = assetInfo.name.split('.').at(1);
+						if (/png|jpe?g|gif|svg|webp|avif|tiff|bmp|ico/i.test(extType)) {
+							extType = "images";
+						} else if (/woff2?|ttf|eot/i.test(extType)) {
+							extType = "fonts";
+						} else {
+							extType = "js";
+						}
+						return `${extType}/[name]-[hash][extname]`;
+					},
+          entryFileNames: 'js/[name]-[hash].mjs',
+          chunkFileNames: 'js/[name]-[hash].mjs',
+        },
+      },
+    },
+  },
 	site: 'https://www.kamenwriter.com',
 	markdown: {
 		remarkPlugins: [

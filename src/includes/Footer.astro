@@ -202,20 +202,42 @@
 <script>
   ;(() => {
     const firstViews = () => {
-      const images = document.querySelectorAll('img')
+      const pictures = document.querySelectorAll('picture')
       const head = document.querySelector('head')
       const windowHeight = window.innerHeight
-      images.forEach((image) => {
-        const rect = image.getBoundingClientRect()
+
+      pictures.forEach((picture) => {
+        const rect = picture.getBoundingClientRect()
         if (rect.top < windowHeight) {
-          image.removeAttribute('loading')
-          image.removeAttribute('decoding')
-          image.setAttribute('fetchpriority', 'high')
-          const link = document.createElement('link')
-          link.rel = 'preload'
-          link.href = image.src
-          link.as = 'image'
-          head.appendChild(link)
+          const sources = picture.querySelectorAll('source')
+          sources.forEach((source) => {
+            const srcset = source.getAttribute('srcset')
+            if (srcset) {
+              const srcs = srcset.split(',').map((src) => src.trim().split(' ')[0])
+              srcs.forEach((src) => {
+                const link = document.createElement('link')
+                link.rel = 'preload'
+                link.href = src
+                link.as = 'image'
+                head.appendChild(link)
+              })
+            }
+          })
+
+          const img = picture.querySelector('img')
+          if (img) {
+            img.removeAttribute('loading')
+            img.removeAttribute('decoding')
+            img.setAttribute('fetchpriority', 'high')
+            const imgSrc = img.getAttribute('src')
+            if (imgSrc) {
+              const link = document.createElement('link')
+              link.rel = 'preload'
+              link.href = imgSrc
+              link.as = 'image'
+              head.appendChild(link)
+            }
+          }
         }
       })
     }
