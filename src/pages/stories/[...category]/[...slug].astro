@@ -12,8 +12,6 @@ import setting from '@/config/setting.json'
 import { Picture } from 'astro:assets'
 import defaultProf from '@/images/profile_img.jpg'
 import Toc from '@/components/Toc.astro';
-import { getRelativeDate } from '@/utils/dateUtils.js'
-
 
 const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
 const url = protocol + setting.site.host + decodeURI(Astro.url.pathname)
@@ -343,26 +341,16 @@ const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4);
                       読了見込
                       <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
                       <time
+												class="js-time-ext"
                         datetime={new Date(post.data.date)
                           .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
                           .replaceAll('/', '-')}
                       >
-                        <span class="u-fnt-en">
-                          {
-                            getRelativeDate(
-                              new Date(post.data.date)
-                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                                .replaceAll('/', '-'),
-                            ).number
-                          }
+												<span class="u-fnt-en">
+                          {new Date(post.data.date)
+                            .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                            .replaceAll('/', '.')}
                         </span>
-                        {
-                          getRelativeDate(
-                            new Date(post.data.date)
-                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                              .replaceAll('/', '-'),
-                          ).text
-                        }
                       </time>
                     </span>
                   )}
@@ -414,26 +402,16 @@ const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4);
                       読了見込
                       <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
                       <time
+												class="js-time-ext"
                         datetime={new Date(post.data.date)
                           .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
                           .replaceAll('/', '-')}
                       >
                         <span class="u-fnt-en">
-                          {
-                            getRelativeDate(
-                              new Date(post.data.date)
-                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                                .replaceAll('/', '-'),
-                            ).number
-                          }
+                          {new Date(post.data.date)
+                            .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                            .replaceAll('/', '.')}
                         </span>
-                        {
-                          getRelativeDate(
-                            new Date(post.data.date)
-                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                              .replaceAll('/', '-'),
-                          ).text
-                        }
                       </time>
                     </span>
                   )}

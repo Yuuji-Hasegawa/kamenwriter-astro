@@ -1,5 +1,5 @@
 ---
-
+import { getRelativeDate } from '@/utils/dateUtils'
 ---
 
 <div class="c-cta u-mb-xl">
@@ -200,7 +200,21 @@
   <p class="c-suppl-l u-txt-ctr u-fnt-en u-txt-thn">©︎ www.kamenwriter.com</p>
 </footer>
 <script>
+  import { getRelativeDate } from '@/utils/dateUtils'
   ;(() => {
+    const timeToExt = () => {
+      const targetTime = document.querySelectorAll('.js-time-ext')
+      targetTime.forEach((timeTag) => {
+        const dateStr = timeTag.getAttribute('datetime')
+        if (dateStr) {
+          const relativeDate = getRelativeDate(dateStr)
+
+          timeTag.innerHTML = `
+						<span class="u-fnt-en">${relativeDate.number}</span><span>${relativeDate.text}</span>
+					`
+        }
+      })
+    }
     const firstViews = () => {
       const pictures = document.querySelectorAll('picture')
       const head = document.querySelector('head')
@@ -264,6 +278,7 @@
     window.addEventListener('load', () => {
       firstViews()
       setContainIntrinsicSize()
+      timeToExt()
     })
     window.addEventListener(
       'resize',

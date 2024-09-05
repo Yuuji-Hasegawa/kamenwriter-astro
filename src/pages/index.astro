@@ -4,7 +4,6 @@ import { getCollection } from 'astro:content'
 import Hero from '@/components/Hero.astro'
 import { Picture } from 'astro:assets'
 import defaultProf from '@/images/profile_img.jpg'
-import { getRelativeDate } from '@/utils/dateUtils'
 const allNews = await getCollection('news')
 const allNewsSorted = allNews.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
 const firstNewsList = allNewsSorted.slice(0, 5)
@@ -100,26 +99,16 @@ const firstPostsList = allPostsSorted.slice(0, 6)
                       読了見込
                       <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
                       <time
+                        class="js-time-ext"
                         datetime={new Date(post.data.date)
                           .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
                           .replaceAll('/', '-')}
                       >
                         <span class="u-fnt-en">
-                          {
-                            getRelativeDate(
-                              new Date(post.data.date)
-                                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                                .replaceAll('/', '-'),
-                            ).number
-                          }
+                          {new Date(post.data.date)
+                            .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                            .replaceAll('/', '.')}
                         </span>
-                        {
-                          getRelativeDate(
-                            new Date(post.data.date)
-                              .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                              .replaceAll('/', '-'),
-                          ).text
-                        }
                       </time>
                     </span>
                   )}
