@@ -2,7 +2,6 @@
 title: 'AstroでWebサイトをリニューアルしてみた件'
 date: '2024-06-16'
 update: ''
-#image: '../../public/images/thumb.png'
 image: '../../../public/images/st-ogp-01.png'
 ogp: '/images/st-ogp-01.png'
 ogpSq: '/images/st-ogp-01-1x1.png'
