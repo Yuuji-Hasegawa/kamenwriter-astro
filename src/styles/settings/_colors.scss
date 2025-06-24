@@ -60,9 +60,9 @@
 }
 
 @function f-rgb-to-oklab($color) {
-  $red: f-degamma(math.div(color.red($color), 255));
-  $green: f-degamma(math.div(color.green($color), 255));
-  $blue: f-degamma(math.div(color.blue($color), 255));
+  $red: f-degamma(math.div(color.channel($color, "red", $space: rgb), 255));
+  $green: f-degamma(math.div(color.channel($color, "green", $space: rgb), 255));
+  $blue: f-degamma(math.div(color.channel($color, "blue", $space: rgb), 255));
   $alpha: color.alpha($color);
 
   $lms: (

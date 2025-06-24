@@ -23,7 +23,7 @@ $fontScale: (
 ) !default;
 
 @function f-font-size($scale, $unit: rem) {
-  $fontSize: map-get($fontScale, $scale);
+  $fontSize: map.get($fontScale, $scale);
   @if $unit == em {
     @return $fontEm * $fontSize;
   } @else {

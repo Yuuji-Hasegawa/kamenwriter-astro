@@ -22,7 +22,7 @@ $spaceScale: (
 ) !default;
 
 @function f-get-space($scale, $unit: px) {
-  $spaceSize: map-get($spaceScale, $scale);
+  $spaceSize: map.get($spaceScale, $scale);
   @if $unit == em {
     @return $spaceEm * $spaceSize;
   } @else if $unit == rem {
