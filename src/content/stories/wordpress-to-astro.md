@@ -3,8 +3,7 @@ title: 'AstroでWebサイトをリニューアルしてみた件'
 date: '2024-06-16'
 update: ''
 image: '../../ogp/st-ogp-01.png'
-ogp: '../../ogp/st-ogp-01.png'
-ogpSq: '../../ogp/st-ogp-01-1x1.png'
+ogp: '/images/st-ogp-01.png'
 keywords: ['WordPress', 'Astro']
 summary: '永らくWordPressサイトだった本サイトを、Astroへリニューアルした背景や実装した感覚について、私なりの知見をまとめました。Astroへ至る経緯、他のJamstackとの比較、生成AIを用いた開発体験など、個人的な感想をお楽しみください。'
 category:

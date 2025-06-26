@@ -53,13 +53,6 @@ switch (pageType) {
 const ogpURL = imgUrl ? new URL(imgUrl, Astro.site).href : new URL('/images/ogp.png', Astro.site).href
 const ogpImgw = imgW || 1200
 const ogpImgh = imgH || 630
-const ogpTw = imgSq
-  ? new URL(imgSq, Astro.site).href
-  : imgUrl
-    ? new URL(imgUrl, Astro.site).href
-    : new URL('/images/ogp-1x1.png', Astro.site).href
-const ogpTwW = imgW || 1200
-const ogpTwH = imgSq ? ogpTwW : imgH ? imgH : 1200
 ---
 
 <!doctype html>
@@ -103,16 +96,14 @@ const ogpTwH = imgSq ? ogpTwW : imgH ? imgH : 1200
     {pageType === 'single' && date && <meta property="article:published_time" content={date} />}
     {pageType === 'single' && update && <meta property="article:modified_time" content={update} />}
     {pageType === 'single' && <meta property="article:author" content={setting.facebook.author} />}
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content={setting.twitter.site} />
     <meta name="twitter:site:id" content={setting.twitter.siteId} />
     <meta name="twitter:creator" content={setting.twitter.creator} />
     <meta name="twitter:creator:id" content={setting.twitter.creatorId} />
     <meta name="twitter:title" content={title ? title : setting.site.title} />
     <meta name="twitter:description" content={metaDesc} />
-    <meta name="twitter:image" content={ogpTw} />
-    <meta name="twitter:image:width" content={String(Math.min(ogpTwW, ogpTwH))} />
-    <meta name="twitter:image:height" content={String(Math.min(ogpTwW, ogpTwH))} />
+    <meta name="twitter:image" content={ogpURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>

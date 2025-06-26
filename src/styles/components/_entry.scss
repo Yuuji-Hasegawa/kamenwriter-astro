@@ -50,11 +50,20 @@
 }
 
 .c-entry {
-  p {
+  p,
+	ul,
+	ol,
+	blockquote {
     & + * {
       margin-top: setting.f-get-space(l);
     }
   }
+
+	blockquote {
+		padding: setting.f-get-space(m);
+		color: map.get(setting.$pickupColor, text-secondary);
+  	background: map.get(setting.$pickupColor, bg-secondary);
+	}
 }
 
 .c-bio-pict {
@@ -62,8 +71,8 @@
 }
 
 .c-bio-txt {
-  flex-basis: map.get(setting.$breakpoints, unders);
   flex-grow: 1;
+  flex-basis: map.get(setting.$breakpoints, unders);
 
   & > :not(div.c-content-m) {
     width: min(map.get(setting.$breakpoints, overs), 100%);
@@ -72,12 +81,12 @@
 }
 
 .c-media-narrow {
-	flex-basis: 35%;
 	flex-grow: 1;
+	flex-basis: 35%;
 }
 
 .c-media-wide {
-	flex-basis: 0;
   flex-grow: 999;
+	flex-basis: 0;
 	min-width: min(map.get(setting.$breakpoints, underm), 100%);
 }
