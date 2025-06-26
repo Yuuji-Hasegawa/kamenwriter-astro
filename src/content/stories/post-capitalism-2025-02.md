@@ -1,6 +1,6 @@
 ---
 title: '情報主義社会の構築方法と、情報を用いた「報徳仕法」構想に関する素案 2025 #2'
-date: '2025-06-26'
+date: '2025-06-25'
 update: ''
 image: '../../ogp/st-ogp-03.png'
 ogp: '/images/st-ogp-03.png'
