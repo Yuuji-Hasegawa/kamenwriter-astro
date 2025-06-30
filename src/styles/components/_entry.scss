@@ -64,6 +64,16 @@
 		color: map.get(setting.$pickupColor, text-secondary);
   	background: map.get(setting.$pickupColor, bg-secondary);
 	}
+
+	code {
+		font-weight: map.get(setting.$fontWeight, l);
+		color: map.get(setting.$brandColors, middle);
+
+		&::before,
+		&::after {
+			content: '`';
+		}
+	}
 }
 
 .c-bio-pict {
