@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kamenwriter-2025-07-01-1';
+const CACHE_NAME = 'kamenwriter-2025-07-02-1';
 const OFFLINE_URL = 'https://www.kamenwriter.com/';
 const urlsToCache = ['https://www.kamenwriter.com/'];
 
