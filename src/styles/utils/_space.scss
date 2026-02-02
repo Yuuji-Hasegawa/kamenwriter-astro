@@ -1,5 +1,5 @@
-@use 'sass:map';
-@use '../settings' as setting;
+@use "sass:map";
+@use "../settings" as setting;
 
 $positions: (top, right, bottom, left);
 $targets: (
@@ -8,16 +8,24 @@ $targets: (
   stack: stack-mt,
   center: center-pd,
 ) !default;
+$position-prefixes: (
+  top: t,
+  right: r,
+  bottom: b,
+  left: l,
+) !default;
 
 @each $key, $name in setting.$spaceScale {
   @each $position in $positions {
-    $y_or_x: if($position == top or $position == bottom, y, x);
-    $prefix: if($position == top, t, if($position == right, r, if($position == bottom, b, l)));
-    $is_target: if(
-      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl,
-      true,
-      false
-    );
+    $y_or_x: null;
+    @if $position == top or $position == bottom {
+      $y_or_x: y;
+    } @else {
+      $y_or_x: x;
+    }
+
+    $prefix: map.get($position-prefixes, $position);
+    $is_target: $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl;
     @if $is_target {
       .u-m#{$prefix}-#{$key},
       .u-m#{$y_or_x}-#{$key},
@@ -36,13 +44,15 @@ $targets: (
 
 @each $key, $name in setting.$spaceScale {
   @each $position in $positions {
-    $y_or_x: if($position == top or $position == bottom, y, x);
-    $prefix: if($position == top, t, if($position == right, r, if($position == bottom, b, l)));
-    $is_target: if(
-      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl,
-      true,
-      false
-    );
+    $y_or_x: null;
+    @if $position == top or $position == bottom {
+      $y_or_x: y;
+    } @else {
+      $y_or_x: x;
+    }
+
+    $prefix: map.get($position-prefixes, $position);
+    $is_target: $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl;
     @if $is_target {
       .u-p#{$prefix}-#{$key},
       .u-p#{$y_or_x}-#{$key},
@@ -64,7 +74,7 @@ $targets: (
 }
 
 @each $key, $name in setting.$spaceScale {
-  $is_target: if($key == 2xs or $key == xs or $key == s or $key == m or $key == l, true, false);
+  $is_target: $key == 2xs or $key == xs or $key == s or $key == m or $key == l;
   @if $is_target {
     .u-space-#{$key} {
       --custom-space: var(--space-#{$key});

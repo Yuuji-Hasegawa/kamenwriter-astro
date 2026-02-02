@@ -26,7 +26,7 @@
 }
 
 @each $key, $name in setting.$fontWeight {
-  $is_target: if($key == x or $key == l, true, false);
+  $is_target: $key == x or $key == l;
   @if $is_target {
     .u-fnt-w#{$key} {
       font-weight: map.get(setting.$fontWeight, $key);

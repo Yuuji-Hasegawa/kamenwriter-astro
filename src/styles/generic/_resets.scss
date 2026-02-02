@@ -16,11 +16,7 @@
 
 :root {
   @each $key, $name in setting.$spaceScale {
-    $is_target: if(
-      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl,
-      true,
-      false
-    );
+    $is_target: $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl;
     @if $is_target {
       --space-#{$key}: #{setting.f-get-space($key)};
     } @else if $key == auto {
@@ -36,11 +32,22 @@
   --reading: #{setting.$readableLength};
 
   @each $key, $name in setting.$fontScale {
-    $is_target: if(
-      $key == 2xs or $key == xs or $key == s or $key == m or $key == l or $key == xl or $key == 2xl or $key == 3xl,
-      true,
-      false
-    );
+    $is_target: $key ==
+      2xs or
+      $key ==
+      xs or
+      $key ==
+      s or
+      $key ==
+      m or
+      $key ==
+      l or
+      $key ==
+      xl or
+      $key ==
+      2xl or
+      $key ==
+      3xl;
     @if $is_target {
       --fnt-#{$key}: #{setting.f-font-size($key)};
     }
