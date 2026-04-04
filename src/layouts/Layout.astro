@@ -39,6 +39,7 @@ let robots: string
 
 switch (pageType) {
   case 'notFound':
+	case 'noindex':
     robots = 'noindex, nofollow, max-image-preview:large'
     break
   case 'archive':

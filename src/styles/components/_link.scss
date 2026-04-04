@@ -1,5 +1,5 @@
-@use 'sass:map';
-@use '../settings' as setting;
+@use "sass:map";
+@use "../settings" as setting;
 
 .c-logo {
   font-size: calc(setting.f-get-space(l) * 2);
@@ -21,8 +21,8 @@
 }
 
 .c-news-link {
-  flex-basis: map.get(setting.$breakpoints, unders);
   flex-grow: 1;
+  flex-basis: map.get(setting.$breakpoints, unders);
 }
 
 .c-more-btn,
@@ -43,7 +43,11 @@
   &:focus,
   &:active {
     color: map.get(setting.$brandColors, middle);
-    background: setting.f-mix(map.get(setting.$pickupColor, bg-primary),map.get(setting.$pickupColor, text-primary), 0.15);
+    background: setting.f-mix(
+      map.get(setting.$pickupColor, bg-primary),
+      map.get(setting.$pickupColor, text-primary),
+      0.15
+    );
   }
 }
 
@@ -70,15 +74,19 @@
 }
 
 .c-about-btn {
-	color: map.get(setting.$pickupColor, text-secondary);
-	background-color: map.get(setting.$pickupColor, bg-secondary);
+  color: map.get(setting.$pickupColor, text-secondary);
+  background-color: map.get(setting.$pickupColor, bg-secondary);
 
-	&:hover,
+  &:hover,
   &:focus,
   &:active {
-		color: map.get(setting.$pickupColor, colored-primary);
-		background: setting.f-mix(map.get(setting.$pickupColor, bg-secondary), map.get(setting.$pickupColor, text-secondary), 0.15);
-	}
+    color: map.get(setting.$pickupColor, colored-primary);
+    background: setting.f-mix(
+      map.get(setting.$pickupColor, bg-secondary),
+      map.get(setting.$pickupColor, text-secondary),
+      0.15
+    );
+  }
 }
 
 .c-card-link {
@@ -91,7 +99,7 @@
     z-index: -1;
     width: clamp(100% + setting.f-get-space(s), (map.get(setting.$breakpoints, overs)), 100% + setting.f-get-space(m));
     height: calc(100% + setting.f-get-space(m));
-    content: '';
+    content: "";
     background-color: transparent;
     transition: all 0.3s ease-in-out;
     transform: translate(-50%, -50%);
@@ -105,13 +113,41 @@
   &:focus,
   &:active {
     &::after {
-			background-color: setting.f-mix(map.get(setting.$pickupColor, bg-primary), map.get(setting.$pickupColor, text-primary), 0.15);
+      background-color: setting.f-mix(
+        map.get(setting.$pickupColor, bg-primary),
+        map.get(setting.$pickupColor, text-primary),
+        0.15
+      );
     }
 
     & > .o-frame > *,
-		& > .c-media-narrow > .o-frame > * {
+    & > .c-media-narrow > .o-frame > * {
       filter: blur(calc(setting.f-get-space(s) * 0.15)) grayscale(100%);
       transform: scale(1.15);
+    }
+  }
+
+  &__inner {
+    color: map.get(setting.$brandColors, middle);
+    text-decoration: underline;
+
+    .c-card-link:visited & {
+      color: color-mix(in oklab, currentColor, map.get(setting.$pickupColor, bg-primary));
+    }
+
+    .c-card-link:hover &,
+    .c-card-link:focus &,
+    .c-card-link:active & {
+      text-decoration: none;
+    }
+
+    .c-card-link:hover & {
+      color: map.get(setting.$brandColors, tint);
+    }
+
+    .c-card-link:focus &,
+    .c-card-link:active & {
+      color: map.get(setting.$brandColors, shade);
     }
   }
 }

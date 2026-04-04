@@ -1,5 +1,5 @@
-@use 'sass:map';
-@use '../settings' as setting;
+@use "sass:map";
+@use "../settings" as setting;
 
 .u-lnh-n {
   line-height: map.get(setting.$lineHeight, none);
@@ -22,7 +22,7 @@
 }
 
 .u-txt-slnt {
-  font-variation-settings: 'slnt' -10;
+  font-variation-settings: "slnt" -10;
 }
 
 @each $key, $name in setting.$fontWeight {

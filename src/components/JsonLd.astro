@@ -48,7 +48,16 @@ if (pageType === 'notFound') {
       name: title,
     },
   })
-} else if (pageType !== 'notFound' || pageType !== 'page') {
+} else if (pageType === 'noindex') {
+	breadArray.push({
+    '@type': 'ListItem',
+    position: 2,
+    item: {
+      '@id': new URL(decodeURI(pathname), Astro.site).href,
+      name: title,
+    },
+  })
+} else if (pageType !== 'notFound' || pageType !== 'noindex' || pageType !== 'page') {
   breadArray.push({
     '@type': 'ListItem',
     position: 2,

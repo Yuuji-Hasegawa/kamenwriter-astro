@@ -22,12 +22,17 @@ const { pageType = '', title = '', catLabel = '' } = Astro.props
 				<a class="c-content-l c-breadcrumb-link" href={pathname} data-astro-prefetch="tap" aria-current="page">お探しのページは見つかりませんでした</a>
 			</li>
 		)}
+		{pageType === 'noindex' && (
+			<li class="c-breadcrumb-item">
+				<a class="c-content-l c-breadcrumb-link" href={pathname} data-astro-prefetch="tap" aria-current="page">リンク集</a>
+			</li>
+		)}
 		{pageType === 'page' && (
 			<li class="c-breadcrumb-item">
 				<a class="c-content-l c-breadcrumb-link" aria-current="page" href={pathname} data-astro-prefetch="tap">{title}</a>
 			</li>
 		)}
-		{pageType !== 'notFound' && pageType !== 'page' && (
+		{pageType !== 'notFound' && pageType !== 'noindex' && pageType !== 'page' && (
       <li class="c-breadcrumb-item">
         <a class="c-content-l c-breadcrumb-link" href={`/${pathSegments[0]}/`} data-astro-prefetch="tap" aria-current={pathDepth === 1 ? 'page' : null}>
           {pathSegments[0] === 'news' ? 'お知らせ' : '記事・トピック'}

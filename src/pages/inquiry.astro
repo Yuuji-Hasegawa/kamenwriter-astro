@@ -139,10 +139,14 @@ const gatewayApi = import.meta.env.PUBLIC_GATEWAY_URL
 
     const validateName = () => {
       const nameValue = nameInput.value.trim() || ''
+			const nameErrorPattern = /(https?:\/\/|www\.|\.(com|jp|net|org)|\/)/i
       if (nameValue === '') {
         showError(nameInput, '必須項目です。', 'name-error')
         return false
-      }
+      } else if(nameErrorPattern.test(nameValue)) {
+				showError(nameInput, 'URLを含む名前は使用できません。', 'name-error')
+				return false
+			}
       hideError('name-error')
       return true
     }
@@ -161,6 +165,23 @@ const gatewayApi = import.meta.env.PUBLIC_GATEWAY_URL
       hideError('email-error')
       return true
     }
+
+		const validateMessage = () => {
+			const messageValue = messageInput.value.trim() || ''
+			const messagePattern = /[ぁ-んァ-ン一-龥ー々〆〤]/
+
+			if (messageValue === '') {
+				hideError('message-error')
+				return true
+			}
+
+			if (!messagePattern.test(messageValue)) {
+				showError(messageInput, '日本語を含めて入力してください。', 'message-error')
+				return false
+			}
+			hideError('message-error')
+  		return true
+		}
 
     const handleSubjectInput = () => {
       if (subject.value.trim() !== '') {
@@ -250,10 +271,11 @@ const gatewayApi = import.meta.env.PUBLIC_GATEWAY_URL
     nameInput.addEventListener('blur', validateName)
     emailInput.addEventListener('blur', validateEmail)
     subject.addEventListener('blur', handleSubjectInput)
+		message.addEventListener('blur', validateMessage)
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault()
-      if (!validateName() || !validateEmail()) {
+      if (!validateName() || !validateEmail() ||validateMessage()) {
         showMessage('入力内容に不備があります。入力内容を確認して、もう一度送信してください。', ':error')
         return
       }
