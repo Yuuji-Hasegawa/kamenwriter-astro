@@ -1,0 +1,42 @@
+<canvas id="lottie-canvas" width="400" height="400"></canvas>
+
+<script>
+  import { DotLottie } from "@lottiefiles/dotlottie-web"
+  const canvas = document.getElementById("lottie-canvas")
+  function resizeCanvas() {
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    let w: number, h: number
+    if (vw / vh > 1 / 1) {
+      h = vh
+      w = vh * (1 / 1)
+    } else {
+      w = vw
+      h = vw * (1 / 1)
+    }
+
+    canvas.style.width = `${w}px`
+    canvas.style.height = `${h}px`
+    dotLottie.resize()
+  }
+
+  const dotLottie = new DotLottie({
+    canvas,
+    src: "/kw-splash.lottie",
+    loop: false,
+    autoplay: true,
+  })
+
+  dotLottie.addEventListener("ready", () => {
+    resizeCanvas()
+  })
+
+  dotLottie.addEventListener("complete", () => {
+    setTimeout(() => {
+      window.location.href = `/landing/list/`
+    }, 500)
+  })
+
+  window.addEventListener("resize", resizeCanvas)
+</script>
