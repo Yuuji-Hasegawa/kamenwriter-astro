@@ -1,16 +1,16 @@
 ---
-import { Picture } from 'astro:assets'
-import defaultProf from '@/images/profile_img.jpg'
-import Layout from '@/layouts/Layout.astro'
-import { getCollection } from 'astro:content'
-import Pagination from '@/components/Pagination.astro'
+import { Picture } from "astro:assets"
+import defaultProf from "@/images/profile_img.jpg"
+import Layout from "@/layouts/Layout.astro"
+import { getCollection, render } from "astro:content"
+import Pagination from "@/components/Pagination.astro"
 
 export const postsPerPage = 12
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('stories')
+  const allPosts = await getCollection("stories")
   for (const post of allPosts) {
-    const { remarkPluginFrontmatter } = await post.render()
+    const { remarkPluginFrontmatter } = await render(post)
     post.data.minutesRead = remarkPluginFrontmatter.minutesRead
   }
   const uniqueTags = [...new Set(allPosts.flatMap((post) => post.data.tags.map((tag) => tag.slug)))]
@@ -46,30 +46,30 @@ const tagLabel = firstPostsList[0]?.data.tags.find((t) => t.slug === slug)?.labe
           <li>
             <a
               class="o-stack c-card-link u-insert-stack u-space-m"
-              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              href={`/stories/${post.data.category.slug}/${post.id}/`}
               data-astro-prefetch="tap"
             >
               <Picture
-                pictureAttributes={{ class: 'o-frame js-cnt-v-auto' }}
+                pictureAttributes={{ class: "o-frame js-cnt-v-auto" }}
                 src={post.data.image as any}
                 width={post.data.image.width / 2}
                 height={post.data.image.height / 2}
                 widths={[240, 480, 540, 720, 1024, 1440, post.data.image.width / 2]}
                 sizes={`(max-width: 360px) 240px, (max-width: 520px) 480px, (max-width: 720px) 540px, (max-width: 960px) 768px, (max-width: 1280px) 1024px, (max-width: 1536px) 1440px, ${post.data.image.width / 2}px`}
-                formats={['avif', 'webp']}
+                formats={["avif", "webp"]}
                 fetchpriority="low"
                 alt=""
               />
               <span class="c-card-link__detail">
                 <Picture
-                  pictureAttributes={{ class: 'o-frame :sq :r js-cnt-v-auto' }}
+                  pictureAttributes={{ class: "o-frame :sq :r js-cnt-v-auto" }}
                   src={defaultProf}
-                  formats={['avif', 'webp']}
+                  formats={["avif", "webp"]}
                   fetchpriority="low"
                   alt=""
                 />
                 <span class="o-stack u-insert-stack u-space-none">
-                  <span class="c-content-l u-txt-trim :twoline">{post.data.title ? post.data.title : 'お知らせ'}</span>
+                  <span class="c-content-l u-txt-trim :twoline">{post.data.title ? post.data.title : "お知らせ"}</span>
                   {post.data.category.label && (
                     <span class="o-box c-suppl-l c-cat-label u-px-xs u-my-s">{post.data.category.label}</span>
                   )}
@@ -77,17 +77,17 @@ const tagLabel = firstPostsList[0]?.data.tags.find((t) => t.slug === slug)?.labe
                   {post.data.date && (
                     <span class="c-suppl-l u-txt-sec">
                       読了見込
-                      <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, '')}</span>分・
+                      <span class="u-ml-xs u-fnt-en">{post.data.minutesRead.toString().replace(/\D/g, "")}</span>分・
                       <time
                         class="js-time-ext"
                         datetime={new Date(post.data.date)
-                          .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                          .replaceAll('/', '-')}
+                          .toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })
+                          .replaceAll("/", "-")}
                       >
                         <span class="u-fnt-en">
                           {new Date(post.data.date)
-                            .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                            .replaceAll('/', '.')}
+                            .toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })
+                            .replaceAll("/", ".")}
                         </span>
                       </time>
                     </span>

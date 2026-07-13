@@ -1,11 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import { getCollection } from 'astro:content'
+import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
 	const stories = await getCollection('stories');
 	return stories.map((entry: any) => ({
-		params: { category: entry.data.category.slug ? encodeURIComponent(entry.data.category.slug) : 'uncategorized', slug: entry.slug }, props: { entry },
+		params: { category: entry.data.category.slug ? encodeURIComponent(entry.data.category.slug) : 'uncategorized', slug: entry.id }, props: { entry },
   }));
 }
 import setting from '@/config/setting.json'
@@ -16,15 +16,15 @@ import Toc from '@/components/Toc.astro';
 const protocol = import.meta.env.MODE === 'production' ? 'https://' : 'http://'
 const url = protocol + setting.site.host + decodeURI(Astro.url.pathname)
 
-const { entry } = Astro.props as { entry: any };
-const { Content, remarkPluginFrontmatter, headings } = await (entry as any).render();
+const { entry } = Astro.props;
+const { Content, remarkPluginFrontmatter, headings } = await render(entry);
 
 const allPosts = await getCollection('stories');
 for (const post of allPosts) {
-  const { remarkPluginFrontmatter } = await post.render()
+  const { remarkPluginFrontmatter } = await render(post)
   post.data.minutesRead = remarkPluginFrontmatter.minutesRead
 }
-const filteredPosts = allPosts.filter(post => post.slug !== entry.slug);
+const filteredPosts = allPosts.filter(post => post.id !== entry.id);
 const allPostsSorted = filteredPosts.sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
 )
@@ -308,7 +308,7 @@ const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4);
           <li>
             <a
               class="o-stack c-card-link u-insert-stack u-space-m"
-              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              href={`/stories/${post.data.category.slug}/${post.id}/`}
               data-astro-prefetch="tap"
             >
               <Picture
@@ -369,7 +369,7 @@ const shufflePosts = shuffleArray(allPostsSorted.slice(3)).slice(0, 4);
           <li>
             <a
               class="o-stack c-card-link u-insert-stack u-space-m"
-              href={`/stories/${post.data.category.slug}/${post.slug}/`}
+              href={`/stories/${post.data.category.slug}/${post.id}/`}
               data-astro-prefetch="tap"
             >
               <Picture

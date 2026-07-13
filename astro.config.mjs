@@ -3,9 +3,10 @@ import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 import { remarkReadingTime } from './src/utils/reading-time.mjs';
 import sitemap from "@astrojs/sitemap";
-import compress from "astro-compress";
+import compress from "@playform/compress";
 import partytown from "@astrojs/partytown";
 import remarkExternalLinks from 'remark-external-links';
+import { unified } from '@astrojs/markdown-remark';
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,26 +33,28 @@ export default defineConfig({
   },
 	site: 'https://www.kamenwriter.com',
 	markdown: {
-		remarkPlugins: [
-			remarkReadingTime,
-			[remarkExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
-		]
+		processor: unified({
+			remarkPlugins: [
+				remarkReadingTime,
+				[remarkExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }]
+			]
+		})
   },
 	integrations: [
 		react(),
 		mdx(),
-		compress({
-    css: true,
-    html: true,
-    img: true,
-    js: true,
-    svg: true
-		}),
 		sitemap(),
 		partytown({
 			config: {
         forward: ['dataLayer.push'],
 			}
+		}),
+		compress({
+			CSS: true,
+      HTML: true,
+      Image: true,
+      JavaScript: true,
+      SVG: true,
 		})
 	],
   trailingSlash: "always",

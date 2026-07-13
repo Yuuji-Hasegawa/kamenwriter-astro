@@ -1,12 +1,12 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import { getCollection } from 'astro:content'
+import Layout from "@/layouts/Layout.astro"
+import { getCollection } from "astro:content"
 export const postsPerPage = 10
-const allNews = await getCollection('news')
+const allNews = await getCollection("news")
 const allNewsSorted = allNews.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
 const firstNewsList = allNewsSorted.slice(0, postsPerPage)
 const totalPage = Math.ceil(allNewsSorted.length / postsPerPage)
-import Pagination from '@/components/Pagination.astro'
+import Pagination from "@/components/Pagination.astro"
 ---
 
 <Layout title="お知らせ" pageType="archive">
@@ -19,15 +19,15 @@ import Pagination from '@/components/Pagination.astro'
             <time
               class="c-content-l u-fnt-en u-txt-thn"
               datetime={new Date(news.data.date)
-                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                .replaceAll('/', '-')}
+                .toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })
+                .replaceAll("/", "-")}
             >
               {new Date(news.data.date)
-                .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
-                .replaceAll('/', '.')}
+                .toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })
+                .replaceAll("/", ".")}
             </time>
-            <a class="c-news-link c-content-l u-txt-l" href={`/news/${news.slug}/`} data-astro-prefetch="tap">
-              {news.data.title ? news.data.title : 'お知らせ'}
+            <a class="c-news-link c-content-l u-txt-l" href={`/news/${news.id}/`} data-astro-prefetch="tap">
+              {news.data.title ? news.data.title : "お知らせ"}
             </a>
           </li>
         ))

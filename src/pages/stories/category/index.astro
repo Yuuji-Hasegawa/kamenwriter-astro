@@ -1,13 +1,13 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import { getCollection } from 'astro:content'
-const allPosts = await getCollection('stories')
+import Layout from "@/layouts/Layout.astro"
+import { getCollection } from "astro:content"
+const allPosts = await getCollection("stories")
 const categoriesMap = new Map()
 
 allPosts.forEach((post) => {
   const category = post.data.category || {}
-  const slug = category.slug || 'uncategorized'
-  const label = category.label?.trim() || '未分類'
+  const slug = category.slug || "uncategorized"
+  const label = category.label?.trim() || "未分類"
 
   categoriesMap.set(slug, label)
 })
